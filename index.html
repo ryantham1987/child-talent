@@ -1,0 +1,720 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>儿童个性化成长评估</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@500;700;800&family=ZCOOL+KuaiLe&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+/* Layout: a sunny storybook column — sticker-style cards with thick outlines and hard shadows, one dimension per step, a friendly sprout mascot guiding along */
+:root{
+  --sky:#E6F4FF; --sky2:#D3ECFF; --card:#FFFFFF; --ink:#26284A; --muted:#5D6088; --outline:#26284A; --soft:#F1F4FB;
+  --sun:#FFC83D; --coral:#FF7A6B; --grass:#38B67A; --blue:#4D8DF7; --grape:#8E6CD8; --pink:#FF9FC6;
+  --sun-soft:#FFF2C7; --grass-soft:#D9F5E6; --grape-soft:#ECE4FF; --blue-soft:#DCE9FF; --coral-soft:#FFE1DC;
+  --none:#A7ADC6; --on-color:#26284A;
+  --f-display:"Baloo 2","ZCOOL KuaiLe","Noto Sans SC",system-ui,sans-serif;
+  --f-body:"Nunito","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --r:18px; --sh:4px 4px 0 var(--outline);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --sky:#171A36; --sky2:#1F2347; --card:#262A55; --ink:#F2F3FF; --muted:#B7BAE0; --outline:#0A0B1E; --soft:#30356A;
+  --sun-soft:#4A3F1C; --grass-soft:#1C4434; --grape-soft:#372C62; --blue-soft:#22336A; --coral-soft:#4D2A2B;
+  --none:#7C82A8; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --sky:#171A36; --sky2:#1F2347; --card:#262A55; --ink:#F2F3FF; --muted:#B7BAE0; --outline:#0A0B1E; --soft:#30356A;
+  --sun-soft:#4A3F1C; --grass-soft:#1C4434; --grape-soft:#372C62; --blue-soft:#22336A; --coral-soft:#4D2A2B;
+  --none:#7C82A8; color-scheme:dark}
+*{box-sizing:border-box}
+html{background:var(--sky)}
+body{background:var(--sky) radial-gradient(circle at 1px 1px, var(--sky2) 2px, transparent 2.5px) 0 0/26px 26px;color:var(--ink);font-family:var(--f-body);font-size:15.5px;line-height:1.65;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:780px;margin:0 auto;padding-block:16px 64px;display:flex;flex-direction:column;gap:22px}
+h1,h2,h3{font-family:var(--f-display);font-weight:800;text-wrap:balance;margin:0;line-height:1.2}
+html[lang="zh"] h1,html[lang="zh"] h2,html[lang="zh"] h3{font-family:"ZCOOL KuaiLe","Baloo 2","Noto Sans SC",sans-serif;font-weight:400;letter-spacing:.02em}
+h1{font-size:clamp(32px,7vw,48px)}
+h2{font-size:25px}
+h3{font-size:19px}
+p{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:13.5px}
+.eyebrow{display:inline-block;font-family:var(--f-display);font-weight:700;font-size:13px;letter-spacing:.06em;background:var(--sun);color:var(--on-color);border:2px solid var(--outline);border-radius:999px;padding:1px 12px;align-self:flex-start}
+button{font:inherit;cursor:pointer;color:inherit}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+.btn{border:2.5px solid var(--outline);background:var(--card);color:var(--ink);padding:8px 18px;border-radius:14px;font-weight:800;font-family:var(--f-display);font-size:16px;box-shadow:3px 3px 0 var(--outline);transition:transform .08s,box-shadow .08s}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--outline)}
+.btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--outline)}
+.btn:disabled{opacity:.45;cursor:default;transform:none;box-shadow:3px 3px 0 var(--outline)}
+.btn.primary{background:var(--grass);color:#fff}
+.btn.sun{background:var(--sun);color:var(--on-color)}
+.btn.ghost{background:transparent;border-color:transparent;box-shadow:none;color:var(--muted);padding-inline:6px}
+.btn.ghost:hover{color:var(--ink);transform:none}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.spacer{flex:1}
+.card{background:var(--card);border:3px solid var(--outline);border-radius:var(--r);box-shadow:var(--sh);padding:20px}
+
+/* top bar */
+.topbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:8px;font-family:var(--f-display);font-weight:800;font-size:17px}
+.langs{display:flex;border:2.5px solid var(--outline);border-radius:12px;overflow:hidden;background:var(--card);box-shadow:2px 2px 0 var(--outline)}
+.langs button{border:0;background:transparent;padding:4px 12px;font-weight:800;font-size:14px;font-family:var(--f-display)}
+.langs button+button{border-left:2px solid var(--outline)}
+.langs button[aria-pressed="true"]{background:var(--sun);color:var(--on-color)}
+
+/* home */
+.hero{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:16px;align-items:center;background:linear-gradient(180deg,var(--blue-soft),var(--card));overflow:hidden}
+.hero>div{display:flex;flex-direction:column;gap:10px;min-width:0;position:relative;z-index:1}
+.hero .lead{font-size:16px;color:var(--muted);max-width:56ch}
+.hero .mascot{width:150px;max-width:100%;position:relative;z-index:1}
+.deco{position:absolute;pointer-events:none}
+.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.fact{display:flex;gap:12px;align-items:flex-start;min-width:0;padding:16px}
+.fact .ic{flex:none;width:40px;height:40px;border-radius:12px;border:2.5px solid var(--outline);display:grid;place-items:center}
+.fact b{display:block;font-family:var(--f-display);font-size:16px}
+.fact span{font-size:14px}
+.scale{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.scale i{font-style:normal;font-size:12px;background:var(--soft);padding:1px 8px;border-radius:8px;font-weight:700}
+.notice{background:var(--sun-soft);border:2.5px dashed var(--outline);border-radius:var(--r);padding:14px 16px;font-size:14px}
+.versions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.ver{display:flex;flex-direction:column;gap:10px;min-width:0;position:relative}
+.ver .badge{position:absolute;right:14px;top:-18px;width:56px;height:56px}
+.ver.p{background:linear-gradient(180deg,var(--grass-soft),var(--card) 60%)}
+.ver.c{background:linear-gradient(180deg,var(--coral-soft),var(--card) 60%)}
+.ver .meta{display:flex;gap:14px;flex-wrap:wrap;font-size:13.5px;color:var(--muted)}
+.ver .meta b{color:var(--ink);font-variant-numeric:tabular-nums}
+.meter{height:14px;background:var(--soft);border:2.5px solid var(--outline);border-radius:999px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--grass);background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.25) 0 6px,transparent 6px 12px)}
+.ver.c .meter i{background-color:var(--coral)}
+.namebox{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:14px 18px}
+.namebox label{font-weight:800;font-family:var(--f-display)}
+input[type=text],textarea,select{font:inherit;color:var(--ink);background:var(--card);border:2.5px solid var(--outline);border-radius:12px;padding:8px 12px}
+.namebox input{flex:1;min-width:0;max-width:260px}
+.steps-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:0;margin:0}
+.steps-list li{list-style:none;font-size:13.5px;color:var(--muted);display:flex;gap:10px;align-items:flex-start;min-width:0}
+.steps-list .n{flex:none;width:34px;height:34px;border-radius:50%;border:2.5px solid var(--outline);display:grid;place-items:center;font-family:var(--f-display);font-weight:800;color:var(--on-color);font-size:16px}
+.steps-list b{display:block;color:var(--ink);font-size:14.5px}
+
+/* quiz */
+.qtop{display:flex;flex-direction:column;gap:10px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--sky);padding-block:10px;z-index:5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--sky)}
+.trail{display:flex;gap:6px}
+.trail div{flex:1;min-width:0}
+.trail .bar{height:14px;background:var(--card);border:2.5px solid var(--outline);border-radius:999px;overflow:hidden}
+.trail .bar i{display:block;height:100%}
+.trail .lbl{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px;font-weight:700}
+.trail .on .lbl{color:var(--ink);font-weight:800}
+.counter{font-variant-numeric:tabular-nums;font-size:14px;font-weight:800;font-family:var(--f-display);background:var(--card);border:2.5px solid var(--outline);border-radius:999px;padding:1px 12px}
+.stepcard{position:relative}
+.dimhead{display:flex;gap:14px;align-items:center}
+.dimhead>div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.dimhead svg{flex:none;width:64px;height:64px}
+.bubble{position:relative;background:var(--soft);border-radius:14px;padding:6px 12px;font-size:14px;font-weight:700;color:var(--muted)}
+.q{display:flex;flex-direction:column;gap:10px;padding-block:18px;border-top:2.5px dashed var(--soft)}
+.q:first-of-type{border-top:0}
+.q p{font-size:16.5px;font-weight:700}
+.q .qn{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;font-family:var(--f-display);font-weight:800;margin-right:8px;font-size:15px;border:2px solid var(--outline);vertical-align:2px}
+.opts{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.opt{border:2.5px solid var(--outline);background:var(--card);border-radius:14px;padding:6px 2px 4px;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0;box-shadow:2px 2px 0 var(--outline);transition:transform .1s}
+.opt svg{width:38px;height:38px}
+.opt small{font-size:11px;color:var(--muted);font-weight:800;line-height:1.15;text-align:center;hyphens:auto;overflow-wrap:normal;word-break:normal}
+.opt:hover{transform:translateY(-2px)}
+.opt[aria-checked="true"]{background:var(--sun);transform:translateY(-3px) rotate(-2deg);box-shadow:3px 4px 0 var(--outline)}
+.opt[aria-checked="true"] small{color:var(--on-color)}
+.opt.na[aria-checked="true"]{background:var(--none)}
+textarea{width:100%;min-height:64px;resize:vertical;font-size:14px}
+.notelbl{font-weight:800;font-size:14px;display:block;margin-top:6px;margin-bottom:4px}
+.navrow{display:flex;gap:12px;align-items:center}
+.hint{font-size:13.5px;color:var(--muted);text-align:center;font-weight:700}
+
+/* results */
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
+.tab{border:2.5px solid var(--outline);background:var(--card);padding:6px 14px;border-radius:12px;white-space:nowrap;font-weight:800;font-family:var(--f-display);box-shadow:2px 2px 0 var(--outline)}
+.tab[aria-selected="true"]{background:var(--blue);color:#fff}
+.sample-banner{background:var(--grape-soft);border:2.5px solid var(--outline);border-radius:var(--r);padding:10px 14px;font-size:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-weight:700}
+.rhero{display:grid;grid-template-columns:minmax(0,1fr) 120px;gap:14px;align-items:center;background:linear-gradient(180deg,var(--sun-soft),var(--card))}
+.rhero>div{display:flex;flex-direction:column;gap:8px;min-width:0}
+.rhero svg{width:120px;max-width:100%}
+.summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.sumcol{display:flex;flex-direction:column;gap:10px;min-width:0}
+.sumcol h3{display:flex;gap:8px;align-items:center}
+.sumcol.s{background:linear-gradient(180deg,var(--grass-soft),var(--card) 70%)}
+.sumcol.w{background:linear-gradient(180deg,var(--grape-soft),var(--card) 70%)}
+.chiplist{display:flex;flex-direction:column;gap:8px}
+.chiplist div{display:flex;justify-content:space-between;gap:10px;font-size:14.5px;padding:6px 12px;border-radius:12px;border:2px solid var(--outline);background:var(--card);font-weight:700}
+.chiplist span:last-child{font-variant-numeric:tabular-nums;font-weight:800;font-family:var(--f-display)}
+.dist{display:flex;height:22px;border-radius:999px;overflow:hidden;background:var(--soft);border:2.5px solid var(--outline)}
+.dist i{display:block;height:100%}
+.dist i+i{border-left:2px solid var(--outline)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted);font-weight:700}
+.legend span{display:flex;align-items:center;gap:6px}
+.dot{width:14px;height:14px;border-radius:50%;display:inline-block;flex:none;border:2px solid var(--outline)}
+.catsec{display:flex;flex-direction:column}
+.cathead{display:flex;justify-content:space-between;gap:10px;align-items:center;padding-bottom:10px;flex-wrap:wrap}
+.cathead h3{display:flex;gap:10px;align-items:center}
+.cathead .sw{width:26px;height:26px;border-radius:8px;border:2.5px solid var(--outline);flex:none}
+.cathead small{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;font-weight:800}
+.dim{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 14px;padding-block:14px;border-top:2.5px dashed var(--soft)}
+.dim .name{font-weight:800;font-size:15.5px}
+.dim .score{font-variant-numeric:tabular-nums;font-weight:800;font-size:18px;text-align:right;font-family:var(--f-display)}
+.dim .track{grid-column:1/-1;position:relative;height:16px;background:var(--soft);border:2.5px solid var(--outline);border-radius:999px;overflow:hidden}
+.dim .track i{position:absolute;left:0;top:0;bottom:0;border-right:2.5px solid var(--outline);border-radius:0 999px 999px 0}
+.dim .track u{position:absolute;top:0;bottom:0;width:0;border-left:2px dotted var(--muted);opacity:.5}
+.dim .info{grid-column:1/-1;display:flex;flex-direction:column;gap:4px;font-size:14px}
+.pill{display:inline-block;font-size:12px;font-weight:800;padding:0 10px;border-radius:999px;margin-right:6px;border:2px solid var(--outline);color:var(--on-color);vertical-align:1px}
+.p-s{background:var(--grass)} .p-m{background:var(--sun)} .p-w{background:var(--grape);color:#fff} .p-n{background:var(--none)}
+.tip{color:var(--muted)}
+.tip b{color:var(--ink)}
+.note{font-size:13px;color:var(--muted);background:var(--soft);border-radius:10px;padding:4px 10px}
+.flag{display:flex;flex-direction:column;gap:6px;background:linear-gradient(180deg,var(--blue-soft),var(--card) 50%)}
+.flag dl{margin:0;display:grid;grid-template-columns:9em minmax(0,1fr);gap:6px 12px;font-size:14px}
+.flag dt{color:var(--muted);font-weight:800}
+.flag dd{margin:0}
+.tablewrap{overflow-x:auto;border:3px solid var(--outline);border-radius:var(--r);box-shadow:var(--sh);background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:600px;font-size:14px}
+th,td{text-align:left;padding:10px 12px;border-bottom:2px solid var(--soft);vertical-align:top}
+th{font-size:12.5px;color:var(--on-color);font-weight:800;background:var(--sun)}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap;font-weight:800}
+.plan{display:flex;flex-direction:column;gap:12px}
+.plan label{font-size:13.5px;color:var(--muted);display:flex;flex-direction:column;gap:4px;font-weight:800}
+.plan select,.plan input{width:100%}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--card);padding:8px 18px;border-radius:999px;font-weight:800;z-index:20;border:2.5px solid var(--outline)}
+.section{display:flex;flex-direction:column;gap:14px}
+.foot{font-size:12.5px;color:var(--muted);text-align:center}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:30}
+
+@media (max-width:620px){
+  .facts,.versions,.summary,.grid2,.steps-list{grid-template-columns:minmax(0,1fr)}
+  .hero{grid-template-columns:minmax(0,1fr) 92px}
+  .hero .mascot{width:92px}
+  .rhero{grid-template-columns:minmax(0,1fr) 84px}
+  .opts{gap:5px}
+  .opt svg{width:30px;height:30px}
+  .opt small{font-size:9.5px}
+  .trail .lbl{display:none}
+  .flag dl{grid-template-columns:minmax(0,1fr)}
+  .dimhead svg{width:48px;height:48px}
+}
+@media (prefers-reduced-motion:no-preference){
+  .stepin{animation:pop .35s cubic-bezier(.3,1.5,.6,1)}
+  @keyframes pop{from{transform:scale(.96) translateY(8px)}to{transform:none}}
+  .bob{animation:bob 3s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(-6px) rotate(2deg)}}
+  .opt[aria-checked="true"] svg{animation:wig .4s}
+  @keyframes wig{30%{transform:rotate(-12deg) scale(1.15)}70%{transform:rotate(8deg)}}
+}
+</style>
+
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+const DATA = {"P":[{"c":"先天优势与潜能","d":"学术学习","q":["学习新知识时，孩子通常能在适量讲解后理解重点。","面对新任务，孩子能理解要求并尝试独立完成。","孩子会主动探索自己感兴趣的知识。"],"tip":"用真实生活问题、讨论和适度挑战来拓展兴趣。"},{"c":"先天优势与潜能","d":"艺术与创作","q":["孩子会主动绘画、做手工、设计或创作。","孩子会在模仿之外加入自己的想法。","孩子会留意颜色、形状、声音或作品细节。"],"tip":"提供开放式材料和自由创作时间，少强调作品必须完美。"},{"c":"先天优势与潜能","d":"创业与主动解决问题","q":["孩子会主动想办法实现自己想做的事。","材料不足时，孩子会尝试寻找替代方法。","孩子会提出活动计划、邀请别人或安排步骤。"],"tip":"让孩子参与小型家庭任务，练习计划、选择和复盘。"},{"c":"先天优势与潜能","d":"语言表达","q":["孩子喜欢讲故事、描述经历或分享想法。","孩子能记住新词语并尝试在生活中使用。","孩子会根据听者调整表达，让别人更容易理解。"],"tip":"共读、轮流讲故事、描述一天中最有趣的事。"},{"c":"先天优势与潜能","d":"领导与组织","q":["孩子会主动提出小组游戏的玩法或活动想法。","意见不同时，孩子会尝试协调或听取别人的意见。","小组遇到困难时，孩子愿意承担适龄的责任。"],"tip":"轮流让孩子负责家庭小任务，强调合作而非谁说了算。"},{"c":"先天优势与潜能","d":"数学与规律","q":["孩子容易理解数量、大小、顺序或简单数字关系。","孩子会发现排列、图形或日常事物中的规律。","孩子愿意尝试不同方法解决数学问题。"],"tip":"在购物、烹饪、积木和桌游中自然练习数学。"},{"c":"先天优势与潜能","d":"音乐","q":["孩子容易记住歌曲旋律并在之后哼唱。","孩子会留意节奏、音高变化或唱得与原曲不同。","孩子会自然跟着音乐拍手、律动或使用乐器。"],"tip":"用短时间、有趣的节奏模仿和轻松歌唱练习。"},{"c":"先天优势与潜能","d":"耐力运动兴趣","q":["孩子喜欢持续进行适龄的跑步、游泳、骑车或其他活动。","活动需要持续努力时，孩子能在适当休息后继续参与。","孩子喜欢逐步完成较长路线或掌握新的运动技能。"],"tip":"提供多种运动选择，关注快乐、休息和安全。"},{"c":"先天优势与潜能","d":"速度与动作协调","q":["孩子喜欢短时间、动作变化较快的游戏。","在适龄游戏中，孩子能较快启动动作或改变方向。","孩子喜欢练习需要身体协调和快速反应的活动。"],"tip":"尝试安全的接球、跳格子、舞蹈或障碍路线游戏。"},{"c":"学习模式与认知","d":"理解与推理","q":["遇到没学过的问题时，孩子会用已有经验尝试推理。","孩子能解释简单的因果关系。","一种方法行不通时，孩子会尝试另一种方法。"],"tip":"请孩子解释“你怎么想到的”，并一起比较不同方法。"},{"c":"学习模式与认知","d":"语言理解","q":["孩子能清楚表达需求、想法和感受。","听完故事后，孩子能说出主要内容。","孩子通常能理解日常对话和适龄的新词语。"],"tip":"用孩子熟悉的语言讨论故事，再逐渐扩展词汇。"},{"c":"学习模式与认知","d":"长期记忆","q":["过一段时间后，孩子仍能回忆起学过的主要内容。","再次遇到学过的内容时，孩子通常能认出或运用。","孩子能把以前学过的知识用在新情境中。"],"tip":"采用间隔复习、例子和实际应用，而非只反复抄写。"},{"c":"学习模式与认知","d":"听觉／言语记忆","q":["听到两至三个连续指示后，孩子通常能按顺序完成。","听完短故事后，孩子能记住主要人物或事件顺序。","口头说明后，孩子较少需要别人重复全部内容。"],"tip":"指示简短分步；让孩子复述关键步骤，必要时配合图片。"},{"c":"学习模式与认知","d":"视觉记忆","q":["看过图片或图形后，孩子能回忆重要细节。","看过示范后，孩子能记住步骤并尝试模仿。","孩子大致记得常用物品放在哪里。"],"tip":"用视觉清单、固定位置和图示步骤支持日常任务。"},{"c":"学习模式与认知","d":"工作记忆","q":["面对连续的两至三个步骤时，孩子通常能记住下一步。","做题时，孩子能同时记住题目条件并继续处理信息。","任务进行中，孩子较少忘记自己刚做到哪一步。"],"tip":"一次给一个步骤，使用勾选清单，并逐渐减少提示。"},{"c":"学习模式与认知","d":"注意与回到任务","q":["在适合年龄且感兴趣的活动中，孩子能投入一段时间。","周围有干扰时，孩子有时能把注意力带回任务。","被打断后，孩子能在少量提醒下继续原来的任务。"],"tip":"减少桌面杂物、任务拆小、短休息、明确开始步骤。"},{"c":"学习模式与认知","d":"解决问题","q":["遇到困难时，孩子会先尝试一种解决方法。","第一次失败后，孩子愿意调整方法再试。","孩子能说明自己遇到什么问题或需要什么帮助。"],"tip":"先问“你试过什么？”再提供一小步提示。"},{"c":"学习模式与认知","d":"阅读","q":["孩子能认读符合其年龄和教学阶段的文字。","读完短文后，孩子能说出大意，而不只是读出文字。","遇到不懂的字句时，孩子会尝试推测或主动询问。"],"tip":"每天短时共读，讨论内容；持续困难可咨询教师或专业人士。"},{"c":"学习模式与认知","d":"拼写与书写","q":["适当复习后，孩子能较稳定地写出学过的字词。","书写时，孩子能注意字形、部件或字母顺序。","听写或写作时，孩子会检查并尝试修正明显错误。"],"tip":"短时分段练习，使用示范、字卡和多感官练习；避免羞辱或过量抄写。"},{"c":"自我管理","d":"亲和与建立关系","q":["孩子愿意与熟悉的人互动或分享。","别人向孩子表达善意时，孩子通常能作出回应。","在新环境中，孩子能在适当时间和支持下逐渐适应。"],"tip":"提前介绍新环境，允许观察和热身，不强迫立即表现。"},{"c":"自我管理","d":"帮助与分享","q":["看到别人遇到困难时，孩子有时会主动提出帮助。","分享或安排游戏时，孩子会考虑别人的需要。","轮流或等待时，孩子能在适当支持下尝试配合。"],"tip":"示范具体帮助方式，并尊重孩子合理的个人物品界限。"},{"c":"自我管理","d":"面对错误","q":["做错事情后，孩子愿意在支持下检查或修改。","不确定答案时，孩子愿意尝试，而不总是因怕错而停下。","听到反馈后，孩子能逐渐把注意力转向下一步怎么改进。"],"tip":"表扬策略和努力，示范成人如何平静地改正自己的错误。"},{"c":"自我管理","d":"自律与日常责任","q":["孩子能在适量提醒下完成符合年龄的日常任务。","活动结束后，孩子愿意把物品放回固定位置。","面对不喜欢但必要的任务，孩子能在支持下开始或继续。"],"tip":"固定流程、视觉清单、一次一件事；先协助建立习惯。"},{"c":"自我管理","d":"同理心","q":["孩子会注意到别人明显的情绪变化。","当自己的行为影响别人时，孩子能逐渐理解对方感受。","发生争执后，孩子愿意在帮助下听听对方的想法。"],"tip":"帮孩子命名双方感受，并练习修复关系的具体方法。"},{"c":"自我管理","d":"毅力与坚持","q":["有难度的任务中，孩子愿意尝试一段时间。","暂时没有进步时，孩子能在适当帮助下继续练习。","孩子能为喜欢的活动设定小目标并逐步完成。"],"tip":"把目标拆小，记录进步，安排休息并提供适度帮助。"},{"c":"自我管理","d":"心理弹性","q":["计划改变时，孩子能在调整时间后接受新安排。","遇到失望后，孩子能在支持下逐渐平静。","一次不成功后，孩子愿意再寻找机会或方法。"],"tip":"提前预告变化，提供有限选择，先接纳情绪再解决问题。"},{"c":"自我管理","d":"社交与协商","q":["孩子能在帮助下理解并遵守游戏规则。","别人有不同意见时，孩子愿意尝试沟通或轮流。","争执时，孩子能逐渐用语言表达，而不是只用动作回应。"],"tip":"角色扮演轮流、拒绝、道歉和协商的说法。"},{"c":"自我管理","d":"压力应对","q":["面对表演、测验或新挑战时，孩子能在支持下参与。","任务较多时，孩子能在提醒和休息帮助下逐步完成。","受到批评或发现落后时，孩子能逐渐恢复信心并继续尝试。"],"tip":"降低一次性要求，拆分任务，先连接情绪再给建议。"},{"c":"情绪与动机","d":"愤怒时的行为控制","q":["意见不同时，孩子能较多时候用语言表达不满。","失望或游戏不顺利时，孩子较少用伤人的动作回应。","情绪平复后，孩子能在成人帮助下讨论下一次可以怎么做。"],"tip":"先确保安全、平静地设界限，再教替代行为和修复方法。"},{"c":"情绪与动机","d":"易怒／挫折反应","q":["事情不如预期时，孩子能在适当支持下逐渐调整。","被要求停止喜欢的活动或开始任务时，孩子能逐步转换。","生气后，孩子能使用一些方法帮助自己恢复平静。"],"tip":"预告转换、使用计时器、提供两种选择，教呼吸或安静角落。"},{"c":"情绪与动机","d":"担忧与不确定感","q":["遇到新环境或任务时，孩子能在支持下尝试。","孩子通常不会因担心失败或被责备而长期不敢开始。","计划改变时，孩子能在解释和支持后逐渐安心。"],"tip":"提前说明流程、从小步开始，避免嘲笑或强迫立即面对。"},{"c":"情绪与动机","d":"情绪低落时的恢复","q":["心情不好时，孩子仍能在支持下参与一些平常喜欢的活动。","遇到失望后，孩子能逐渐重新投入日常生活。","孩子愿意向可信任的大人表达难过或寻求安慰。"],"tip":"温和倾听、维持日常节奏；持续低落请咨询儿科或儿童心理专业人士。"},{"c":"情绪与动机","d":"外向／主动社交","q":["在熟悉环境中，孩子会主动发起交谈或游戏。","孩子愿意参与自己感兴趣的集体活动。","孩子能在独处与社交之间找到自己舒服的节奏。"],"tip":"给孩子选择社交或安静活动的机会，不强迫表演。"},{"c":"情绪与动机","d":"对变化的适应","q":["日常安排改变时，孩子能逐渐适应。","面对没有唯一答案的问题时，孩子愿意尝试。","提前解释变化或提供选择后，孩子通常更容易调整。"],"tip":"用日程图、提前预告和可选择的小选项支持过渡。"},{"c":"情绪与动机","d":"独处与自我调节","q":["孩子会主动选择独自阅读、创作或安静活动。","独处后，孩子通常感到放松并能重新参与日常活动。","孩子既能享受独处，也能在需要时向别人求助。"],"tip":"尊重安静时间，同时提供不带压力的互动机会。"},{"c":"情绪与动机","d":"情绪敏感度","q":["孩子能留意到声音、气味、触感或环境细节。","环境太吵或太拥挤时，孩子会表达不舒服或需要休息。","受到严厉语气或批评影响后，孩子能在支持下逐渐恢复。"],"tip":"预备安静休息空间，用平静语气，提前说明较刺激的场景。"},{"c":"情绪与动机","d":"好奇心","q":["孩子会主动提出问题或询问事物为什么如此。","发现新事物时，孩子愿意观察、尝试或进一步了解。","没有奖励时，孩子也会探索自己感兴趣的主题。"],"tip":"提供图书、自然观察、积木和“你猜会怎样”的探索活动。"},{"c":"情绪与动机","d":"乐观与成长心态","q":["遇到困难时，孩子相信练习可能带来进步。","一次不顺利后，孩子仍愿意期待下一次机会。","得到鼓励后，孩子能看到可尝试的下一步。"],"tip":"说“还没学会”而非“你不行”，一起找一个可执行的小步骤。"},{"c":"情绪与动机","d":"探索意愿","q":["面对安全且适龄的新活动时，孩子愿意尝试。","接触陌生事物时，孩子会先观察再决定是否参与。","尝试失败后，孩子愿意在安全前提下再次挑战。"],"tip":"提供有选择权的适龄挑战，允许先观察再参与。"},{"c":"情绪与动机","d":"情感表达与共情反应","q":["故事、音乐或他人的经历会引起孩子的情绪反应。","孩子会用说话、绘画或其他方式表达感动或难过。","情绪被触动后，孩子能在支持下逐渐恢复日常活动。"],"tip":"接纳感受，提供绘画、讲述或安静陪伴等表达方式。"},{"c":"健康与生活习惯","d":"睡眠与白天精神","q":["孩子通常有相对稳定、符合年龄需要的睡眠作息。","孩子白天通常有足够精神参与日常活动。","孩子较少持续出现难入睡、频繁夜醒或明显疲倦。"],"tip":"稳定睡前流程，减少睡前刺激；若持续困扰，寻求医疗建议。"},{"c":"健康与生活习惯","d":"屏幕使用平衡","q":["约定的屏幕时间结束时，孩子能在成人支持下停止。","不能使用屏幕时，孩子也能找到其他可接受的活动。","屏幕使用较少挤压睡眠、运动、学习和家庭互动。"],"tip":"共同制定清晰规则，预告结束时间，准备替代活动。"},{"c":"健康与生活习惯","d":"视力关注（需专业检查）","q":["孩子较少持续抱怨看不清近处或远处的文字。","孩子较少持续眯眼、歪头或把书拿得特别近。","孩子较少在阅读后持续抱怨眼部不适或头痛。"],"tip":"保证适当阅读环境，安排户外活动，并按建议进行视力检查。"},{"c":"健康与生活习惯","d":"健康生活习惯","q":["孩子有规律的适龄活动和户外游戏机会。","日常饮食有多样化食物并满足成长需要。","孩子有相对稳定、符合年龄需要的睡眠安排。"],"tip":"全家一起建立可持续的饮食、活动和睡眠习惯。"}],"C":[{"c":"我的兴趣","d":"我喜欢的活动","q":["我会自己想去画画、做手工、搭积木或创造东西。","做我喜欢的事情时，我常常想继续多试一会儿。","我喜欢把自己的新点子告诉别人。"],"tip":"安排多种体验，观察孩子愿意主动投入什么；不急着决定未来方向。"},{"c":"我的学习","d":"理解和提问","q":["听懂一件新事情后，我能用自己的话说一说。","不明白时，我愿意问问题或请人解释。","遇到难题时，我会试试不同的方法。"],"tip":"鼓励孩子说出想法，遇到不懂时一起拆解问题。"},{"c":"我的学习","d":"记住步骤","q":["别人告诉我两三件要做的事时，我通常记得住。","我知道自己做到作业或任务的哪一步。","看过示范后，我能试着照着做。"],"tip":"把任务分成小步骤，使用图片或清单，并逐渐减少提醒。"},{"c":"我的学习","d":"专心与回到任务","q":["做适合我的任务时，我能专心一会儿。","分心以后，我能试着回到原来的事情。","我知道开始一项任务时，第一步要做什么。"],"tip":"减少干扰、明确第一步、短时任务配短休息。"},{"c":"我的学习","d":"阅读与表达","q":["我能说出读过的故事大概讲什么。","我能告诉别人自己的想法或需要。","遇到不懂的字或句子时，我会问一问。"],"tip":"每天轻松共读，鼓励复述故事和表达疑问。"},{"c":"我的自我管理","d":"整理与责任","q":["我会试着把用过的东西放回原位。","我能在提醒下完成适合我的小任务。","我会试着记住上学或活动需要带的东西。"],"tip":"设置固定收纳位置，用简短清单和稳定流程。"},{"c":"我的自我管理","d":"坚持与面对错误","q":["事情有点难时，我愿意再试一次。","做错了以后，我愿意学习怎样改好。","我可以请别人帮我，而不是马上放弃。"],"tip":"把难题拆小，肯定尝试和策略，允许求助与休息。"},{"c":"我的自我管理","d":"和别人相处","q":["玩游戏时，我会试着轮流和遵守规则。","别人和我想法不同时，我会试着听一听。","如果我让别人不开心，我愿意想办法修复关系。"],"tip":"练习轮流、倾听、协商、道歉和修复关系的句子。"},{"c":"我的情绪","d":"说出感受","q":["我能告诉别人自己是生气、难过、害怕还是开心。","心情不好时，我知道可以找谁帮忙。","我能找到一些让自己慢慢平静的方法。"],"tip":"协助命名情绪，练习深呼吸、喝水、安静休息或找可信任成人。"},{"c":"我的情绪","d":"面对变化和失望","q":["计划改变时，我可以在一点时间后试着适应。","事情没成功时，我愿意想想下一次可以怎么做。","我知道不开心的时候可以休息一下再继续。"],"tip":"提前预告变化，提供有限选择，先接纳感受再讨论下一步。"},{"c":"我的情绪","d":"好奇与尝试","q":["我喜欢问“为什么”或了解新东西。","遇到安全的新活动时，我愿意先看看再决定要不要试。","我喜欢发现新的玩法或解决办法。"],"tip":"提供安全探索机会，使用开放式问题，允许先观察再参加。"},{"c":"我的生活","d":"睡眠与屏幕平衡","q":["我大多数时候能按约定准备睡觉。","屏幕时间结束时，我能试着停下来。","不看屏幕时，我也能找到别的事情做。"],"tip":"共同约定屏幕结束流程和睡前流程，并准备替代活动。"}],"G":[["维度平均分 4.0–5.0","最近4–6周较常观察到这一表现；可能是兴趣、熟悉度或当前环境带来的优势。","继续提供机会和适度挑战；问孩子是否想深入，不要把优势变成额外压力。","每周安排2次孩子自主选择的相关活动，并记录投入程度和愉悦感。","若优势伴随明显压力、完美主义或影响其他生活，也需调整要求。"],["维度平均分 3.0–3.9","表现可能随情境变化；有些场景容易，有些场景需要帮助。","比较不同任务、时间、环境和成人提示，找出哪些条件能帮助孩子成功。","记录3次“成功的情境”和3次“困难的情境”，比较差别。","如果同一困难持续影响上学、家庭生活或人际关系，可与老师或专业人士讨论。"],["维度平均分 1.0–2.9","目前较少观察到该表现，或孩子可能需要更多支持；不能据此判断能力不足。","降低任务难度、示范第一步、提供工具或提示；观察支持后是否改善。","选一个小目标，例如“用视觉清单完成早晨3个步骤”，每周回顾。","若困难持续、跨多个环境出现并明显影响功能，寻求合资格专业评估。"],["资料不足／N/A","观察机会不足、题意不适合，或表现难以判断。","暂不下结论；在自然情境中观察，必要时请老师提供具体例子。","接下来两周记录具体事件，而不是急着补分。","涉及视力、睡眠、情绪或学习的持续担忧，应咨询相关专业人士。"],["父母版高、儿童版低","孩子可能不觉得自己擅长，或成人与孩子观察的情境不同。","先听孩子的理由，询问哪些部分容易、哪些部分困难；避免争辩谁对谁错。","共同找出一个孩子认同的优势和一个想改善的目标。","若孩子持续自我否定、明显焦虑或不愿参与日常活动，可寻求支持。"],["父母版低、儿童版高","孩子可能有兴趣或信心，但表现机会较少；也可能对自己的体验有不同理解。","安排安全的尝试机会，观察真实表现；尊重孩子的兴趣和主观感受。","每周安排一次相关活动，记录过程、投入和孩子的感受。","如果实际技能困难影响日常功能，再考虑老师或专业人士的具体评估。"],["注意力／任务管理困难","可能与任务难度、指示长度、睡眠、环境干扰、压力或执行功能有关。","缩短指示、任务拆小、使用视觉清单、减少桌面干扰、安排短休息。","记录孩子在有清单与无清单时，开始任务和完成步骤的差别。","若在家校多个环境持续发生并明显影响学习或关系，可与老师、儿科医生讨论。"],["阅读／拼写持续困难","可能需要更合适的教学支持；不同语言的阅读书写表现也可能不同。","记录具体错误类型，短时练习，结合示范和多感官方法，避免惩罚性抄写。","每周记录一种具体技能的变化，例如认读、理解或字形准确度。","若经过适当教学支持仍持续困难，咨询学校、教育心理或学习支持专业人士。"],["情绪调节困难","孩子可能还未掌握表达、等待、转换或平静下来的技能。","先保证安全并帮助平静；之后再教替代行为、表达句式和修复关系。","记录触发情境、成人回应、孩子恢复所需支持及有效方法。","若情绪或行为频繁、强烈、持续，或影响安全和日常生活，应寻求专业建议。"],["睡眠／视力／身体健康疑虑","生活习惯或身体状况可能影响学习和情绪，问卷无法诊断。","记录症状出现的时间、频率和对日常生活的影响。","带着具体观察与儿科医生或眼科专业人员讨论。","持续睡眠问题、视力疑虑或明显身体不适时，安排适当医疗评估。"]],"L":{"en":{"cats":{"先天优势与潜能":"Natural Strengths & Potential","学习模式与认知":"Learning & Thinking","自我管理":"Self-Management","情绪与动机":"Emotions & Motivation","健康与生活习惯":"Health & Daily Habits","我的兴趣":"My Interests","我的学习":"My Learning","我的自我管理":"Managing Myself","我的情绪":"My Feelings","我的生活":"My Daily Life"},"P":[["Academic learning",["When learning something new, my child usually grasps the key points after a reasonable explanation.","Faced with a new task, my child understands what is asked and tries to do it independently.","My child actively explores topics they are interested in."],"Use real-life problems, discussion and the right level of challenge to broaden interests."],["Art & creativity",["My child chooses to draw, do crafts, design or create things.","My child adds their own ideas beyond simply copying.","My child notices colours, shapes, sounds or details in a piece of work."],"Offer open-ended materials and free creative time; put less weight on work being perfect."],["Initiative & problem-solving",["My child finds ways to make the things they want to do happen.","When materials run short, my child tries to find an alternative.","My child suggests activity plans, invites others or arranges the steps."],"Involve your child in small family tasks to practise planning, choosing and reviewing."],["Verbal expression",["My child enjoys telling stories, describing experiences or sharing ideas.","My child remembers new words and tries using them in daily life.","My child adjusts how they speak so the listener can understand more easily."],"Read together, take turns telling stories, describe the most interesting thing of the day."],["Leadership & organising",["My child suggests how to play a group game or proposes activity ideas.","When opinions differ, my child tries to mediate or listen to others.","When a group runs into trouble, my child is willing to take on age-appropriate responsibility."],"Rotate small family jobs your child is in charge of; stress teamwork, not who is the boss."],["Maths & patterns",["My child easily understands quantity, size, order or simple number relationships.","My child spots patterns in arrangements, shapes or everyday things.","My child is willing to try different ways to solve maths problems."],"Practise maths naturally through shopping, cooking, building blocks and board games."],["Music",["My child easily remembers a melody and hums it later.","My child notices rhythm, pitch changes, or when singing differs from the original.","My child naturally claps, moves or plays an instrument along to music."],"Use short, fun rhythm-copying and relaxed singing practice."],["Endurance sports interest",["My child enjoys sustained, age-appropriate running, swimming, cycling or similar activities.","When an activity needs sustained effort, my child can carry on after a suitable rest.","My child likes gradually completing longer routes or mastering new sports skills."],"Offer a variety of sports; focus on fun, rest and safety."],["Speed & coordination",["My child likes short games with fast-changing movements.","In age-appropriate games, my child can start moving or change direction quickly.","My child likes practising activities that need body coordination and quick reactions."],"Try safe games like catching balls, hopscotch, dancing or obstacle courses."],["Understanding & reasoning",["Facing a new problem, my child uses past experience to try to reason it out.","My child can explain simple cause and effect.","When one approach doesn't work, my child tries another."],"Ask your child \"How did you figure that out?\" and compare different methods together."],["Language comprehension",["My child can clearly express needs, ideas and feelings.","After hearing a story, my child can tell the main points.","My child usually understands everyday conversation and new age-appropriate words."],"Discuss stories in the language your child knows best, then gradually expand vocabulary."],["Long-term memory",["After some time, my child can still recall the main points of what was learned.","When meeting previously learned material again, my child usually recognises or uses it.","My child can apply previously learned knowledge in new situations."],"Use spaced review, examples and real application rather than repeated copying."],["Auditory / verbal memory",["After hearing two or three instructions in a row, my child usually completes them in order.","After a short story, my child remembers the main characters or the order of events.","After a spoken explanation, my child rarely needs everything repeated."],"Keep instructions short and step-by-step; have your child repeat key steps, with pictures if needed."],["Visual memory",["After seeing a picture or shape, my child can recall important details.","After a demonstration, my child remembers the steps and tries to copy them.","My child roughly remembers where commonly used things are kept."],"Support daily tasks with visual checklists, fixed places and picture steps."],["Working memory",["With two or three steps in a row, my child usually remembers the next step.","While working on a problem, my child can keep the conditions in mind and keep processing.","During a task, my child rarely forgets where they were up to."],"Give one step at a time, use tick-off checklists, and gradually reduce prompts."],["Attention & returning to task",["In age-appropriate activities they enjoy, my child can stay engaged for a while.","With distractions around, my child can sometimes bring attention back to the task.","After being interrupted, my child can resume the task with a few reminders."],"Clear the desk, break tasks down, take short breaks and make the first step clear."],["Problem-solving",["When stuck, my child first tries one way to solve it.","After a first failure, my child is willing to adjust and try again.","My child can say what problem they have or what help they need."],"Ask \"What have you tried?\" first, then give a small hint."],["Reading",["My child can read text suited to their age and school stage.","After a short passage, my child can say what it is about, not just read the words.","With words or sentences they don't understand, my child tries to guess or asks."],"Read together briefly every day and talk about the content; consult teachers or professionals if difficulty persists."],["Spelling & writing",["After suitable revision, my child can fairly consistently write words they have learned.","When writing, my child pays attention to letter shapes, parts or letter order.","In dictation or writing, my child checks for and tries to fix obvious mistakes."],"Practise in short sessions with modelling, word cards and multi-sensory methods; avoid shaming or excessive copying."],["Friendliness & bonding",["My child is willing to interact or share with familiar people.","When others show kindness, my child usually responds.","In a new environment, my child gradually adapts with time and support."],"Introduce new settings ahead of time, allow watching and warming up; don't force instant performance."],["Helping & sharing",["Seeing someone in difficulty, my child sometimes offers help.","When sharing or arranging games, my child considers others' needs.","When taking turns or waiting, my child tries to cooperate with support."],"Model concrete ways to help, and respect your child's reasonable boundaries over personal belongings."],["Handling mistakes",["After getting something wrong, my child is willing to check or fix it with support.","When unsure of an answer, my child is willing to try rather than stopping for fear of being wrong.","After feedback, my child gradually turns attention to how to improve next."],"Praise strategy and effort; show calmly how adults correct their own mistakes."],["Self-discipline & daily duties",["With a reasonable number of reminders, my child completes age-appropriate daily tasks.","After an activity, my child is willing to put things back in their place.","Facing a necessary task they dislike, my child can start or continue with support."],"Use fixed routines, visual checklists, one thing at a time; help build the habit first."],["Empathy",["My child notices obvious changes in other people's emotions.","When their behaviour affects someone, my child gradually understands how that person feels.","After a quarrel, my child is willing, with help, to listen to the other side."],"Help your child name both sides' feelings and practise concrete ways to repair relationships."],["Perseverance",["On a challenging task, my child is willing to keep trying for a while.","When progress stalls, my child can keep practising with suitable help.","My child can set small goals for favourite activities and reach them step by step."],"Break goals down, record progress, schedule breaks and give the right amount of help."],["Resilience",["When plans change, my child can accept the new arrangement after some adjustment time.","After disappointment, my child can gradually calm down with support.","After not succeeding once, my child is willing to look for another chance or method."],"Give advance notice of changes, offer limited choices, accept emotions first, then solve problems."],["Social skills & negotiation",["With help, my child can understand and follow game rules.","When others disagree, my child is willing to try talking it through or taking turns.","In a conflict, my child gradually uses words rather than only physical reactions."],"Role-play phrases for taking turns, saying no, apologising and negotiating."],["Coping with pressure",["Facing performances, tests or new challenges, my child can take part with support.","With many tasks, my child can complete them gradually with reminders and breaks.","After criticism or falling behind, my child gradually regains confidence and keeps trying."],"Lower one-off demands, split tasks up, connect with feelings before giving advice."],["Controlling behaviour when angry",["When opinions differ, my child mostly expresses displeasure in words.","When disappointed or a game goes badly, my child rarely responds with hurtful actions.","Once calm, my child can discuss with an adult what to do next time."],"Ensure safety first, set limits calmly, then teach alternative behaviours and ways to make amends."],["Irritability / frustration response",["When things don't go as expected, my child can gradually adjust with suitable support.","When asked to stop a favourite activity or start a task, my child can transition step by step.","After getting angry, my child can use some methods to help themselves calm down."],"Announce transitions in advance, use a timer, offer two choices, teach breathing or a quiet corner."],["Worry & uncertainty",["Facing a new environment or task, my child can try with support.","My child usually isn't stuck for long, afraid to start because of fear of failure or blame.","When plans change, my child gradually feels reassured after explanation and support."],"Explain the process in advance, start with small steps, avoid teasing or forcing immediate exposure."],["Recovering from low mood",["When in a bad mood, my child can still join in some favourite activities with support.","After disappointment, my child gradually re-engages with daily life.","My child is willing to tell a trusted adult they are sad or seek comfort."],"Listen gently and keep daily rhythms; if low mood persists, consult a paediatrician or child psychology professional."],["Outgoing / social initiative",["In familiar settings, my child starts conversations or games.","My child is willing to join group activities they are interested in.","My child finds a comfortable balance between time alone and time with others."],"Give your child the choice between social and quiet activities; don't force them to perform."],["Adapting to change",["When daily routines change, my child gradually adapts.","Faced with questions without a single answer, my child is willing to try.","With advance explanation or choices offered, my child usually adjusts more easily."],"Support transitions with visual schedules, advance notice and small choices."],["Solitude & self-regulation",["My child chooses to read, create or do quiet activities alone.","After time alone, my child usually feels relaxed and can rejoin daily activities.","My child can enjoy being alone and also ask others for help when needed."],"Respect quiet time while offering pressure-free chances to interact."],["Emotional sensitivity",["My child notices sounds, smells, textures or details in the environment.","When it is too noisy or crowded, my child says they are uncomfortable or need a break.","After being affected by a harsh tone or criticism, my child can gradually recover with support."],"Prepare a quiet resting space, use a calm tone, explain more stimulating situations in advance."],["Curiosity",["My child asks questions or wonders why things are the way they are.","On discovering something new, my child is willing to observe, try or learn more.","Even without rewards, my child explores topics they are interested in."],"Offer books, nature watching, building blocks and \"What do you think will happen?\" explorations."],["Optimism & growth mindset",["When facing difficulty, my child believes practice can lead to progress.","After something goes badly, my child still looks forward to the next chance.","After encouragement, my child can see a next step to try."],"Say \"not yet\" instead of \"you can't\", and find one doable small step together."],["Willingness to explore",["Faced with a safe, age-appropriate new activity, my child is willing to try.","With unfamiliar things, my child watches first, then decides whether to join.","After a failed attempt, my child is willing to try again safely."],"Offer age-appropriate challenges with choice, and allow watching before joining."],["Emotional expression & empathic response",["Stories, music or others' experiences evoke emotional responses in my child.","My child expresses being moved or sad through words, drawing or other means.","After being emotionally touched, my child can gradually return to daily activities with support."],"Accept feelings; offer drawing, talking or quiet company as ways to express them."],["Sleep & daytime energy",["My child usually has a fairly stable sleep routine suited to their age.","My child usually has enough energy during the day for daily activities.","My child rarely has ongoing trouble falling asleep, frequent night waking or obvious tiredness."],"Keep a steady bedtime routine and reduce stimulation before bed; seek medical advice if problems persist."],["Balanced screen use",["When agreed screen time ends, my child can stop with adult support.","When screens aren't allowed, my child can find other acceptable activities.","Screen use rarely crowds out sleep, exercise, learning or family time."],"Agree clear rules together, give notice before time is up, have alternative activities ready."],["Vision concerns (needs professional check)",["My child rarely keeps complaining about not seeing near or far text clearly.","My child rarely keeps squinting, tilting the head or holding books very close.","My child rarely keeps complaining of eye discomfort or headaches after reading."],"Ensure good reading conditions, schedule outdoor time, and have vision checks as recommended."],["Healthy habits",["My child has regular age-appropriate activity and outdoor play.","Daily meals include a variety of foods that meet growth needs.","My child has a fairly stable sleep schedule suited to their age."],"Build sustainable eating, activity and sleep habits together as a family."]],"C":[["Things I like doing",["I want to draw, make crafts, build blocks or create things on my own.","When doing something I like, I often want to keep trying a bit longer.","I like telling others about my new ideas."],"Arrange many kinds of experiences and watch what your child chooses to dive into; no need to decide a future direction yet."],["Understanding & asking",["After I understand something new, I can explain it in my own words.","When I don't understand, I'm willing to ask questions or ask someone to explain.","When something is hard, I try different ways."],"Encourage your child to share their thinking, and break down confusing problems together."],["Remembering steps",["When someone tells me two or three things to do, I usually remember them.","I know which step I'm on in my homework or task.","After seeing someone show me, I can try doing it the same way."],"Break tasks into small steps, use pictures or checklists, and gradually reduce reminders."],["Focusing & getting back on track",["When doing a task that suits me, I can focus for a while.","After getting distracted, I can try to go back to what I was doing.","When starting a task, I know what the first step is."],"Reduce distractions, make the first step clear, pair short tasks with short breaks."],["Reading & expressing",["I can tell what a story I've read is roughly about.","I can tell others what I think or need.","When I don't understand a word or sentence, I ask about it."],"Read together in a relaxed way every day; encourage retelling stories and asking questions."],["Tidying & responsibility",["I try to put things back where they belong after using them.","With a reminder, I can finish small tasks that suit me.","I try to remember what I need to bring to school or activities."],"Set fixed storage places, use short checklists and steady routines."],["Sticking with it & handling mistakes",["When something is a bit hard, I'm willing to try again.","After making a mistake, I'm willing to learn how to fix it.","I can ask someone for help instead of giving up right away."],"Break hard problems into small parts, praise trying and strategies, allow asking for help and resting."],["Getting along with others",["When playing games, I try to take turns and follow the rules.","When others think differently from me, I try to listen.","If I upset someone, I'm willing to find a way to make things right."],"Practise phrases for taking turns, listening, negotiating, apologising and repairing friendships."],["Saying how I feel",["I can tell others if I'm angry, sad, scared or happy.","When I feel bad, I know who I can go to for help.","I can find some ways to help myself slowly calm down."],"Help name emotions; practise deep breathing, drinking water, quiet rest or finding a trusted adult."],["Handling change & disappointment",["When plans change, I can try to adapt after a little time.","When something doesn't work, I'm willing to think about what to do next time.","I know I can take a break when I'm unhappy and then carry on."],"Announce changes in advance, offer limited choices, accept feelings first and then discuss next steps."],["Curiosity & trying",["I like asking \"why\" or learning about new things.","With a safe new activity, I'm willing to watch first and then decide whether to try.","I like discovering new ways to play or new solutions."],"Provide safe chances to explore, use open-ended questions, allow watching before joining."],["Sleep & screen balance",["Most of the time I can get ready for bed as agreed.","When screen time is over, I can try to stop.","When I'm not using screens, I can find other things to do."],"Agree together on how screen time ends and on a bedtime routine, and have alternative activities ready."]],"G":{"维度平均分 4.0–5.0":["Average 4.0–5.0","Seen often in the past 4–6 weeks; may be a strength coming from interest, familiarity or the current environment.","Keep providing opportunities and the right challenge; ask your child whether they want to go deeper, and don't turn a strength into extra pressure.","Schedule 2 activities a week in this area that your child chooses, and note how engaged and happy they are.","If the strength comes with obvious stress or perfectionism, or affects other parts of life, adjust expectations too."],"维度平均分 3.0–3.9":["Average 3.0–3.9","Performance may vary with the situation; some settings are easy, others need help.","Compare different tasks, times, settings and adult prompts to find what helps your child succeed.","Record 3 \"successful situations\" and 3 \"difficult situations\" and compare the differences.","If the same difficulty keeps affecting school, family life or relationships, talk with a teacher or professional."],"维度平均分 1.0–2.9":["Average 1.0–2.9","This is seen less often right now, or your child may need more support; it cannot be taken as lack of ability.","Lower task difficulty, model the first step, provide tools or prompts; see whether things improve with support.","Pick one small goal, e.g. \"complete 3 morning steps with a visual checklist\", and review weekly.","If difficulties persist across several settings and clearly affect daily functioning, seek a qualified professional assessment."],"资料不足／N/A":["Not enough data / N/A","Not enough chances to observe, the question didn't fit, or behaviour is hard to judge.","Hold off on conclusions; observe in natural settings and ask teachers for concrete examples if needed.","Over the next two weeks, record specific events instead of rushing to fill in scores.","Ongoing concerns about vision, sleep, emotions or learning should be discussed with the relevant professional."],"父母版高、儿童版低":["Parent higher, child lower","Your child may not feel they are good at this, or adults and the child are observing different situations.","Listen to your child's reasons first, ask which parts feel easy or hard; avoid arguing about who is right.","Together, identify one strength your child agrees with and one goal they want to improve.","If your child keeps putting themselves down, seems clearly anxious or avoids daily activities, seek support."],"父母版低、儿童版高":["Parent lower, child higher","Your child may have interest or confidence but fewer chances to show it, or may see their own experience differently.","Arrange safe chances to try and watch what actually happens; respect your child's interests and feelings.","Schedule one related activity a week, recording the process, engagement and how your child felt.","If real skill difficulties affect daily functioning, then consider a specific assessment by a teacher or professional."],"注意力／任务管理困难":["Attention / task-management difficulties","May relate to task difficulty, length of instructions, sleep, distractions, stress or executive function.","Shorten instructions, break tasks down, use visual checklists, reduce desk clutter, schedule short breaks.","Record the difference in starting tasks and finishing steps with and without a checklist.","If it keeps happening at home and school and clearly affects learning or relationships, talk with a teacher or paediatrician."],"阅读／拼写持续困难":["Ongoing reading / spelling difficulties","Your child may need better-suited teaching support; reading and writing can also differ across languages.","Note the specific types of errors, practise briefly, combine modelling and multi-sensory methods, avoid punitive copying.","Each week record changes in one specific skill, e.g. word reading, comprehension or letter-shape accuracy.","If difficulties remain after suitable teaching support, consult the school, an educational psychologist or learning-support professional."],"情绪调节困难":["Emotional regulation difficulties","Your child may not yet have the skills to express, wait, transition or calm down.","Ensure safety and help them calm down first; afterwards teach alternative behaviours, phrases and ways to repair relationships.","Record triggers, adult responses, the support needed to recover and what worked.","If emotions or behaviour are frequent, intense, persistent, or affect safety and daily life, seek professional advice."],"睡眠／视力／身体健康疑虑":["Sleep / vision / physical health concerns","Lifestyle or physical conditions may affect learning and emotions; a questionnaire cannot diagnose them.","Record when symptoms appear, how often, and how they affect daily life.","Bring specific observations to a paediatrician or eye-care professional.","For ongoing sleep problems, vision concerns or clear physical discomfort, arrange an appropriate medical assessment."]}},"ms":{"cats":{"先天优势与潜能":"Kekuatan & Potensi Semula Jadi","学习模式与认知":"Pembelajaran & Pemikiran","自我管理":"Pengurusan Diri","情绪与动机":"Emosi & Motivasi","健康与生活习惯":"Kesihatan & Tabiat Harian","我的兴趣":"Minat Saya","我的学习":"Pembelajaran Saya","我的自我管理":"Mengurus Diri Saya","我的情绪":"Perasaan Saya","我的生活":"Kehidupan Harian Saya"},"P":[["Pembelajaran akademik",["Apabila mempelajari sesuatu yang baharu, anak biasanya faham perkara utama selepas penerangan yang sederhana.","Apabila diberi tugasan baharu, anak faham kehendaknya dan cuba menyiapkannya sendiri.","Anak meneroka sendiri pengetahuan yang diminatinya."],"Gunakan masalah kehidupan sebenar, perbincangan dan cabaran yang sesuai untuk meluaskan minat."],["Seni & kreativiti",["Anak suka melukis, membuat kraf, mereka bentuk atau mencipta sesuatu.","Anak menambah idea sendiri selain meniru.","Anak memerhati warna, bentuk, bunyi atau butiran sesuatu hasil kerja."],"Sediakan bahan terbuka dan masa berkarya bebas; kurangkan penekanan bahawa hasil mesti sempurna."],["Inisiatif & menyelesaikan masalah",["Anak mencari cara untuk merealisasikan perkara yang ingin dilakukannya.","Apabila bahan tidak mencukupi, anak cuba mencari alternatif.","Anak mencadangkan rancangan aktiviti, mengajak orang lain atau menyusun langkah."],"Libatkan anak dalam tugasan kecil keluarga untuk berlatih merancang, memilih dan menilai semula."],["Ekspresi lisan",["Anak suka bercerita, menceritakan pengalaman atau berkongsi idea.","Anak mengingati perkataan baharu dan cuba menggunakannya dalam kehidupan.","Anak menyesuaikan cara bercakap supaya pendengar lebih mudah faham."],"Membaca bersama, bergilir bercerita, ceritakan perkara paling menarik hari ini."],["Kepimpinan & pengorganisasian",["Anak mencadangkan cara bermain permainan berkumpulan atau idea aktiviti.","Apabila pendapat berbeza, anak cuba menyelaraskan atau mendengar pendapat orang lain.","Apabila kumpulan menghadapi masalah, anak sanggup memikul tanggungjawab yang sesuai dengan umurnya."],"Bergilir memberi anak tanggungjawab tugasan kecil keluarga; tekankan kerjasama, bukan siapa yang berkuasa."],["Matematik & corak",["Anak mudah memahami kuantiti, saiz, urutan atau hubungan nombor yang mudah.","Anak mengesan corak dalam susunan, bentuk atau benda harian.","Anak sanggup mencuba cara berbeza untuk menyelesaikan masalah matematik."],"Berlatih matematik secara semula jadi melalui membeli-belah, memasak, blok binaan dan permainan papan."],["Muzik",["Anak mudah mengingati melodi lagu dan menyanyikannya kemudian.","Anak perasan rentak, perubahan nada, atau apabila nyanyian berbeza daripada lagu asal.","Anak secara semula jadi bertepuk, bergerak atau bermain alat muzik mengikut lagu."],"Gunakan latihan meniru rentak yang singkat dan menyeronokkan serta nyanyian santai."],["Minat sukan ketahanan",["Anak suka berlari, berenang, berbasikal atau aktiviti lain secara berterusan mengikut umur.","Apabila aktiviti memerlukan usaha berterusan, anak boleh meneruskan selepas berehat seketika.","Anak suka menamatkan laluan lebih panjang secara beransur-ansur atau menguasai kemahiran sukan baharu."],"Sediakan pelbagai pilihan sukan; utamakan keseronokan, rehat dan keselamatan."],["Kepantasan & koordinasi",["Anak suka permainan singkat dengan pergerakan yang cepat berubah.","Dalam permainan sesuai umur, anak boleh mula bergerak atau menukar arah dengan cepat.","Anak suka berlatih aktiviti yang memerlukan koordinasi badan dan tindak balas pantas."],"Cuba permainan selamat seperti menangkap bola, ting-ting, menari atau laluan halangan."],["Kefahaman & penaakulan",["Apabila menghadapi masalah baharu, anak menggunakan pengalaman sedia ada untuk menaakul.","Anak boleh menerangkan sebab dan akibat yang mudah.","Apabila satu cara tidak berjaya, anak mencuba cara lain."],"Tanya anak \"Bagaimana awak terfikir begitu?\" dan bandingkan cara berbeza bersama-sama."],["Kefahaman bahasa",["Anak boleh menyatakan keperluan, idea dan perasaan dengan jelas.","Selepas mendengar cerita, anak boleh menyatakan isi utamanya.","Anak biasanya memahami perbualan harian dan perkataan baharu yang sesuai umur."],"Bincangkan cerita dalam bahasa yang paling dikuasai anak, kemudian luaskan kosa kata secara beransur."],["Ingatan jangka panjang",["Selepas beberapa lama, anak masih boleh mengingati isi utama yang dipelajari.","Apabila bertemu semula bahan yang pernah dipelajari, anak biasanya mengenali atau menggunakannya.","Anak boleh menggunakan pengetahuan lama dalam situasi baharu."],"Gunakan ulang kaji berjarak, contoh dan aplikasi sebenar, bukan hanya menyalin berulang kali."],["Ingatan pendengaran / lisan",["Selepas mendengar dua atau tiga arahan berturut-turut, anak biasanya menyiapkannya mengikut urutan.","Selepas cerita pendek, anak ingat watak utama atau urutan peristiwa.","Selepas penerangan lisan, anak jarang perlu semuanya diulang."],"Beri arahan ringkas langkah demi langkah; minta anak mengulang langkah utama, dengan gambar jika perlu."],["Ingatan visual",["Selepas melihat gambar atau bentuk, anak boleh mengingati butiran penting.","Selepas melihat demonstrasi, anak ingat langkahnya dan cuba meniru.","Anak secara kasar ingat di mana barang yang selalu digunakan disimpan."],"Sokong tugasan harian dengan senarai semak visual, tempat tetap dan langkah bergambar."],["Ingatan kerja",["Dengan dua atau tiga langkah berturut-turut, anak biasanya ingat langkah seterusnya.","Semasa membuat soalan, anak boleh mengingati syarat soalan sambil terus memproses maklumat.","Semasa tugasan, anak jarang lupa di mana dia sudah sampai."],"Beri satu langkah pada satu masa, gunakan senarai tanda, dan kurangkan bantuan secara beransur."],["Tumpuan & kembali kepada tugasan",["Dalam aktiviti yang diminati dan sesuai umur, anak boleh fokus untuk seketika.","Apabila ada gangguan, anak kadang-kadang boleh mengembalikan tumpuan kepada tugasan.","Selepas diganggu, anak boleh menyambung tugasan dengan sedikit peringatan."],"Kemaskan meja, pecahkan tugasan, rehat singkat, dan jelaskan langkah pertama."],["Menyelesaikan masalah",["Apabila menghadapi kesukaran, anak mencuba satu cara penyelesaian dahulu.","Selepas gagal kali pertama, anak sanggup mengubah cara dan mencuba lagi.","Anak boleh menyatakan masalah yang dihadapi atau bantuan yang diperlukan."],"Tanya \"Apa yang sudah awak cuba?\" dahulu, kemudian beri petunjuk kecil."],["Membaca",["Anak boleh membaca teks yang sesuai dengan umur dan tahap persekolahannya.","Selepas membaca petikan pendek, anak boleh menyatakan maksudnya, bukan sekadar membaca perkataan.","Apabila tidak faham perkataan atau ayat, anak cuba meneka atau bertanya."],"Baca bersama sebentar setiap hari dan bincangkan isinya; rujuk guru atau profesional jika kesukaran berterusan."],["Ejaan & penulisan",["Selepas ulang kaji yang sesuai, anak boleh menulis perkataan yang dipelajari dengan agak konsisten.","Semasa menulis, anak memberi perhatian kepada bentuk huruf, bahagian atau susunan huruf.","Semasa imlak atau menulis, anak menyemak dan cuba membetulkan kesilapan yang jelas."],"Latihan singkat berperingkat dengan tunjuk cara, kad perkataan dan kaedah pelbagai deria; elakkan memalukan atau menyalin berlebihan."],["Mesra & menjalin hubungan",["Anak sanggup berinteraksi atau berkongsi dengan orang yang dikenali.","Apabila orang lain menunjukkan kebaikan, anak biasanya membalas.","Dalam persekitaran baharu, anak beransur-ansur menyesuaikan diri dengan masa dan sokongan."],"Perkenalkan persekitaran baharu lebih awal, benarkan memerhati dan membiasakan diri; jangan paksa anak beraksi serta-merta."],["Membantu & berkongsi",["Apabila melihat orang lain dalam kesusahan, anak kadang-kadang menawarkan bantuan.","Semasa berkongsi atau menyusun permainan, anak mengambil kira keperluan orang lain.","Semasa bergilir atau menunggu, anak cuba bekerjasama dengan sokongan."],"Tunjukkan cara membantu yang konkrit, dan hormati batasan munasabah anak terhadap barang peribadinya."],["Menghadapi kesilapan",["Selepas tersilap, anak sanggup menyemak atau membetulkan dengan sokongan.","Apabila tidak pasti jawapan, anak sanggup mencuba dan tidak selalu berhenti kerana takut salah.","Selepas menerima maklum balas, anak beransur-ansur fokus kepada cara memperbaiki."],"Puji strategi dan usaha; tunjukkan bagaimana orang dewasa membetulkan kesilapan sendiri dengan tenang."],["Disiplin diri & tanggungjawab harian",["Dengan peringatan yang sederhana, anak menyiapkan tugasan harian yang sesuai umur.","Selepas aktiviti, anak sanggup meletakkan barang semula di tempatnya.","Apabila menghadapi tugasan perlu yang tidak disukai, anak boleh memulakan atau meneruskannya dengan sokongan."],"Rutin tetap, senarai semak visual, satu perkara pada satu masa; bantu membina tabiat dahulu."],["Empati",["Anak perasan perubahan emosi orang lain yang jelas.","Apabila tingkah lakunya menjejaskan orang lain, anak beransur-ansur memahami perasaan orang itu.","Selepas bertengkar, anak sanggup mendengar pandangan pihak lain dengan bantuan."],"Bantu anak menamakan perasaan kedua-dua pihak, dan berlatih cara konkrit untuk memulihkan hubungan."],["Ketabahan & kegigihan",["Dalam tugasan yang mencabar, anak sanggup mencuba untuk seketika.","Apabila belum nampak kemajuan, anak boleh terus berlatih dengan bantuan yang sesuai.","Anak boleh menetapkan matlamat kecil untuk aktiviti kegemaran dan mencapainya langkah demi langkah."],"Pecahkan matlamat, rekod kemajuan, aturkan rehat dan beri bantuan yang sesuai."],["Daya tahan psikologi",["Apabila rancangan berubah, anak boleh menerima susunan baharu selepas masa penyesuaian.","Selepas kecewa, anak beransur-ansur tenang dengan sokongan.","Selepas tidak berjaya sekali, anak sanggup mencari peluang atau cara lain."],"Maklumkan perubahan lebih awal, beri pilihan terhad, terima emosi dahulu kemudian selesaikan masalah."],["Sosial & rundingan",["Dengan bantuan, anak boleh memahami dan mematuhi peraturan permainan.","Apabila orang lain berbeza pendapat, anak sanggup cuba berbincang atau bergilir.","Semasa pertelingkahan, anak beransur-ansur menggunakan kata-kata, bukan hanya tindakan fizikal."],"Main peranan ayat untuk bergilir, menolak, meminta maaf dan berunding."],["Menangani tekanan",["Apabila menghadapi persembahan, ujian atau cabaran baharu, anak boleh mengambil bahagian dengan sokongan.","Apabila banyak tugasan, anak boleh menyiapkannya secara berperingkat dengan peringatan dan rehat.","Selepas dikritik atau ketinggalan, anak beransur-ansur pulih keyakinan dan terus mencuba."],"Kurangkan tuntutan sekali gus, pecahkan tugasan, hubungkan dengan emosi dahulu sebelum memberi nasihat."],["Kawalan tingkah laku ketika marah",["Apabila berbeza pendapat, anak lebih kerap meluahkan rasa tidak puas hati dengan kata-kata.","Apabila kecewa atau permainan tidak lancar, anak jarang bertindak dengan cara yang menyakitkan.","Selepas tenang, anak boleh berbincang dengan orang dewasa tentang apa yang boleh dibuat lain kali."],"Pastikan keselamatan dahulu, tetapkan batasan dengan tenang, kemudian ajar tingkah laku alternatif dan cara memperbaiki keadaan."],["Mudah marah / tindak balas kecewa",["Apabila keadaan tidak seperti dijangka, anak boleh menyesuaikan diri secara beransur dengan sokongan.","Apabila diminta berhenti aktiviti kegemaran atau memulakan tugasan, anak boleh beralih secara berperingkat.","Selepas marah, anak boleh menggunakan beberapa cara untuk menenangkan diri."],"Maklumkan peralihan lebih awal, guna pemasa, beri dua pilihan, ajar pernafasan atau sudut tenang."],["Kebimbangan & ketidakpastian",["Apabila menghadapi persekitaran atau tugasan baharu, anak boleh mencuba dengan sokongan.","Anak biasanya tidak lama takut untuk mula kerana bimbang gagal atau dimarahi.","Apabila rancangan berubah, anak beransur-ansur tenang selepas diberi penjelasan dan sokongan."],"Terangkan proses lebih awal, mulakan dengan langkah kecil, elakkan mengejek atau memaksa berdepan serta-merta."],["Pulih daripada perasaan sedih",["Ketika perasaan kurang baik, anak masih boleh menyertai beberapa aktiviti kegemaran dengan sokongan.","Selepas kecewa, anak beransur-ansur kembali kepada kehidupan harian.","Anak sanggup memberitahu orang dewasa yang dipercayai bahawa dia sedih atau meminta dipujuk."],"Dengar dengan lembut dan kekalkan rutin harian; jika sedih berpanjangan, rujuk pakar pediatrik atau profesional psikologi kanak-kanak."],["Peramah / inisiatif sosial",["Dalam persekitaran biasa, anak memulakan perbualan atau permainan.","Anak sanggup menyertai aktiviti berkumpulan yang diminatinya.","Anak menemui rentak yang selesa antara bersendirian dan bersosial."],"Beri anak pilihan antara aktiviti sosial atau aktiviti tenang; jangan paksa beraksi."],["Menyesuaikan diri dengan perubahan",["Apabila jadual harian berubah, anak beransur-ansur menyesuaikan diri.","Apabila menghadapi soalan tanpa satu jawapan tunggal, anak sanggup mencuba.","Selepas perubahan diterangkan lebih awal atau diberi pilihan, anak biasanya lebih mudah menyesuaikan diri."],"Gunakan carta jadual, makluman awal dan pilihan kecil untuk menyokong peralihan."],["Bersendirian & pengawalan diri",["Anak memilih sendiri untuk membaca, berkarya atau melakukan aktiviti tenang secara bersendirian.","Selepas bersendirian, anak biasanya berasa tenang dan boleh kembali kepada aktiviti harian.","Anak boleh menikmati masa bersendirian dan juga meminta bantuan apabila perlu."],"Hormati masa tenang, sambil memberi peluang berinteraksi tanpa tekanan."],["Kepekaan emosi",["Anak perasan bunyi, bau, sentuhan atau butiran persekitaran.","Apabila terlalu bising atau sesak, anak menyatakan rasa tidak selesa atau perlu berehat.","Selepas terkesan dengan nada keras atau kritikan, anak boleh pulih secara beransur dengan sokongan."],"Sediakan ruang rehat yang tenang, gunakan nada tenang, terangkan lebih awal situasi yang lebih merangsang."],["Rasa ingin tahu",["Anak bertanya soalan atau ingin tahu mengapa sesuatu berlaku begitu.","Apabila menemui sesuatu yang baharu, anak sanggup memerhati, mencuba atau mengetahui lebih lanjut.","Walaupun tanpa ganjaran, anak meneroka topik yang diminatinya."],"Sediakan buku, pemerhatian alam, blok binaan dan aktiviti \"Apa agaknya akan berlaku?\"."],["Optimis & minda berkembang",["Apabila menghadapi kesukaran, anak percaya latihan boleh membawa kemajuan.","Selepas sekali tidak lancar, anak masih menantikan peluang seterusnya.","Selepas diberi galakan, anak nampak langkah seterusnya yang boleh dicuba."],"Katakan \"belum boleh lagi\", bukan \"awak tak boleh\", dan cari satu langkah kecil yang boleh dibuat bersama."],["Kesediaan meneroka",["Apabila diberi aktiviti baharu yang selamat dan sesuai umur, anak sanggup mencuba.","Apabila berdepan perkara asing, anak memerhati dahulu sebelum memutuskan untuk menyertai.","Selepas cubaan gagal, anak sanggup mencabar diri lagi dengan selamat."],"Sediakan cabaran sesuai umur dengan hak memilih, benarkan memerhati dahulu sebelum menyertai."],["Ekspresi perasaan & tindak balas empati",["Cerita, muzik atau pengalaman orang lain menimbulkan reaksi emosi pada anak.","Anak meluahkan rasa terharu atau sedih melalui kata-kata, lukisan atau cara lain.","Selepas emosinya tersentuh, anak boleh kembali kepada aktiviti harian secara beransur dengan sokongan."],"Terima perasaan anak; sediakan cara meluahkan seperti melukis, bercerita atau ditemani dengan tenang."],["Tidur & tenaga waktu siang",["Anak biasanya mempunyai rutin tidur yang agak stabil dan sesuai dengan umurnya.","Anak biasanya cukup bertenaga pada waktu siang untuk aktiviti harian.","Anak jarang mengalami kesukaran tidur, kerap terjaga malam atau keletihan ketara secara berterusan."],"Rutin sebelum tidur yang stabil, kurangkan rangsangan sebelum tidur; dapatkan nasihat perubatan jika berterusan."],["Keseimbangan penggunaan skrin",["Apabila masa skrin yang dipersetujui tamat, anak boleh berhenti dengan sokongan orang dewasa.","Apabila tidak boleh menggunakan skrin, anak boleh mencari aktiviti lain yang sesuai.","Penggunaan skrin jarang mengganggu masa tidur, bersenam, belajar dan bersama keluarga."],"Tetapkan peraturan yang jelas bersama, maklumkan masa tamat lebih awal, sediakan aktiviti alternatif."],["Perhatian penglihatan (perlu pemeriksaan profesional)",["Anak jarang terus mengadu tidak nampak jelas tulisan dekat atau jauh.","Anak jarang terus mengecilkan mata, menyengetkan kepala atau memegang buku terlalu dekat.","Anak jarang terus mengadu mata tidak selesa atau sakit kepala selepas membaca."],"Pastikan persekitaran membaca yang sesuai, aktiviti luar, dan pemeriksaan mata seperti disyorkan."],["Tabiat hidup sihat",["Anak mempunyai aktiviti dan permainan luar yang teratur dan sesuai umur.","Makanan harian pelbagai dan memenuhi keperluan tumbesaran.","Anak mempunyai jadual tidur yang agak stabil dan sesuai dengan umurnya."],"Bina tabiat makan, aktiviti dan tidur yang mampan bersama seisi keluarga."]],"C":[["Aktiviti yang saya suka",["Saya sendiri mahu melukis, membuat kraf, menyusun blok atau mencipta sesuatu.","Semasa membuat perkara yang saya suka, saya selalu mahu mencuba lebih lama.","Saya suka memberitahu orang lain idea baharu saya."],"Sediakan pelbagai pengalaman, perhatikan apa yang anak sanggup ceburi sendiri; tidak perlu tergesa-gesa menentukan hala tuju masa depan."],["Memahami & bertanya",["Selepas faham sesuatu yang baharu, saya boleh menerangkannya dengan kata-kata sendiri.","Apabila tidak faham, saya sanggup bertanya atau meminta orang menerangkan.","Apabila menghadapi soalan sukar, saya mencuba cara yang berbeza."],"Galakkan anak meluahkan fikiran; apabila tidak faham, pecahkan masalah bersama-sama."],["Mengingati langkah",["Apabila orang memberitahu dua atau tiga perkara untuk dibuat, saya biasanya ingat.","Saya tahu saya sudah sampai langkah mana dalam kerja rumah atau tugasan.","Selepas melihat contoh, saya boleh cuba membuat yang sama."],"Pecahkan tugasan kepada langkah kecil, gunakan gambar atau senarai, dan kurangkan peringatan secara beransur."],["Fokus & kembali kepada tugasan",["Semasa membuat tugasan yang sesuai dengan saya, saya boleh fokus seketika.","Selepas terganggu, saya boleh cuba kembali kepada perkara tadi.","Apabila memulakan tugasan, saya tahu apa langkah pertama."],"Kurangkan gangguan, jelaskan langkah pertama, tugasan singkat diselangi rehat singkat."],["Membaca & meluahkan",["Saya boleh menyatakan secara ringkas cerita yang saya baca.","Saya boleh memberitahu orang lain apa yang saya fikir atau perlukan.","Apabila tidak faham perkataan atau ayat, saya akan bertanya."],"Membaca bersama secara santai setiap hari, galakkan menceritakan semula dan bertanya."],["Mengemas & tanggungjawab",["Saya cuba meletakkan semula barang yang saya guna di tempatnya.","Dengan peringatan, saya boleh menyiapkan tugasan kecil yang sesuai dengan saya.","Saya cuba ingat barang yang perlu dibawa ke sekolah atau aktiviti."],"Tetapkan tempat simpanan tetap, gunakan senarai ringkas dan rutin yang stabil."],["Gigih & menghadapi kesilapan",["Apabila sesuatu agak sukar, saya sanggup mencuba sekali lagi.","Selepas tersilap, saya sanggup belajar cara membetulkannya.","Saya boleh meminta bantuan dan bukan terus berputus asa."],"Pecahkan soalan sukar, puji cubaan dan strategi, benarkan meminta bantuan dan berehat."],["Bergaul dengan orang lain",["Semasa bermain, saya cuba bergilir dan mematuhi peraturan.","Apabila orang lain berbeza pendapat dengan saya, saya cuba mendengar.","Jika saya membuat orang lain tidak gembira, saya sanggup mencari cara memperbaiki hubungan."],"Berlatih ayat untuk bergilir, mendengar, berunding, meminta maaf dan memulihkan hubungan."],["Menyatakan perasaan",["Saya boleh memberitahu orang lain sama ada saya marah, sedih, takut atau gembira.","Apabila perasaan kurang baik, saya tahu siapa boleh saya minta tolong.","Saya ada beberapa cara untuk membantu diri saya bertenang perlahan-lahan."],"Bantu menamakan emosi, berlatih tarik nafas dalam, minum air, rehat dengan tenang atau cari orang dewasa yang dipercayai."],["Menghadapi perubahan & kekecewaan",["Apabila rancangan berubah, saya boleh cuba menyesuaikan diri selepas sedikit masa.","Apabila sesuatu tidak berjaya, saya sanggup fikir apa yang boleh dibuat lain kali.","Saya tahu saya boleh berehat sebentar ketika tidak gembira, kemudian teruskan."],"Maklumkan perubahan lebih awal, beri pilihan terhad, terima perasaan dahulu kemudian bincang langkah seterusnya."],["Ingin tahu & mencuba",["Saya suka bertanya \"kenapa\" atau mengetahui perkara baharu.","Apabila ada aktiviti baharu yang selamat, saya sanggup tengok dahulu sebelum memutuskan untuk mencuba.","Saya suka menemui cara bermain atau penyelesaian yang baharu."],"Sediakan peluang meneroka yang selamat, gunakan soalan terbuka, benarkan memerhati dahulu sebelum menyertai."],["Keseimbangan tidur & skrin",["Kebanyakan masa saya boleh bersiap untuk tidur seperti yang dipersetujui.","Apabila masa skrin tamat, saya boleh cuba berhenti.","Apabila tidak menggunakan skrin, saya juga boleh mencari perkara lain untuk dibuat."],"Persetujui bersama cara menamatkan masa skrin dan rutin sebelum tidur, serta sediakan aktiviti alternatif."]],"G":{"维度平均分 4.0–5.0":["Purata 4.0–5.0","Kerap diperhatikan dalam 4–6 minggu kebelakangan; mungkin kekuatan hasil minat, kebiasaan atau persekitaran semasa.","Teruskan memberi peluang dan cabaran yang sesuai; tanya anak sama ada mahu mendalami, jangan jadikan kekuatan sebagai tekanan tambahan.","Aturkan 2 aktiviti berkaitan seminggu pilihan anak sendiri, dan rekod tahap penglibatan serta keseronokan.","Jika kekuatan disertai tekanan ketara, perfeksionisme atau menjejaskan aspek hidup lain, laraskan juga jangkaan."],"维度平均分 3.0–3.9":["Purata 3.0–3.9","Prestasi mungkin berubah mengikut situasi; ada situasi mudah, ada yang memerlukan bantuan.","Bandingkan tugasan, masa, persekitaran dan bantuan orang dewasa yang berbeza untuk mengenal pasti apa yang membantu anak berjaya.","Rekod 3 \"situasi berjaya\" dan 3 \"situasi sukar\", bandingkan perbezaannya.","Jika kesukaran yang sama berterusan menjejaskan sekolah, kehidupan keluarga atau hubungan, bincang dengan guru atau profesional."],"维度平均分 1.0–2.9":["Purata 1.0–2.9","Kurang diperhatikan buat masa ini, atau anak mungkin memerlukan lebih sokongan; tidak boleh dianggap kurang keupayaan.","Kurangkan tahap kesukaran, tunjuk langkah pertama, sediakan alat atau petunjuk; perhatikan sama ada bertambah baik dengan sokongan.","Pilih satu matlamat kecil, contohnya \"siapkan 3 langkah pagi dengan senarai semak visual\", dan semak setiap minggu.","Jika kesukaran berterusan, berlaku dalam pelbagai persekitaran dan menjejaskan fungsi harian, dapatkan penilaian profesional bertauliah."],"资料不足／N/A":["Data tidak mencukupi / N/A","Kurang peluang memerhati, soalan tidak sesuai, atau sukar dinilai.","Jangan buat kesimpulan dahulu; perhatikan dalam situasi semula jadi, minta guru memberi contoh konkrit jika perlu.","Dalam dua minggu akan datang, rekod peristiwa khusus dan bukan tergesa-gesa mengisi markah.","Kebimbangan berterusan tentang penglihatan, tidur, emosi atau pembelajaran perlu dirujuk kepada profesional berkaitan."],"父母版高、儿童版低":["Ibu bapa tinggi, anak rendah","Anak mungkin tidak rasa dirinya mahir, atau orang dewasa dan anak memerhati situasi berbeza.","Dengar alasan anak dahulu, tanya bahagian mana mudah atau sukar; elakkan berbalah siapa betul.","Bersama-sama cari satu kekuatan yang anak setuju dan satu matlamat yang dia mahu perbaiki.","Jika anak terus merendahkan diri, jelas cemas atau enggan menyertai aktiviti harian, dapatkan sokongan."],"父母版低、儿童版高":["Ibu bapa rendah, anak tinggi","Anak mungkin berminat atau yakin tetapi kurang peluang menunjukkan, atau memahami pengalamannya secara berbeza.","Aturkan peluang mencuba yang selamat, perhatikan prestasi sebenar; hormati minat dan perasaan anak.","Aturkan satu aktiviti berkaitan seminggu, rekod proses, penglibatan dan perasaan anak.","Jika kesukaran kemahiran sebenar menjejaskan fungsi harian, barulah pertimbangkan penilaian khusus oleh guru atau profesional."],"注意力／任务管理困难":["Kesukaran tumpuan / pengurusan tugasan","Mungkin berkaitan tahap kesukaran tugasan, panjang arahan, tidur, gangguan persekitaran, tekanan atau fungsi eksekutif.","Pendekkan arahan, pecahkan tugasan, guna senarai semak visual, kurangkan gangguan di meja, aturkan rehat singkat.","Rekod perbezaan anak memulakan tugasan dan menyiapkan langkah dengan dan tanpa senarai semak.","Jika berterusan di rumah dan sekolah dan jelas menjejaskan pembelajaran atau hubungan, bincang dengan guru atau pakar pediatrik."],"阅读／拼写持续困难":["Kesukaran membaca / mengeja berterusan","Mungkin memerlukan sokongan pengajaran yang lebih sesuai; prestasi membaca dan menulis juga boleh berbeza mengikut bahasa.","Rekod jenis kesilapan khusus, latihan singkat, gabungkan tunjuk cara dan kaedah pelbagai deria, elakkan menyalin sebagai hukuman.","Rekod perubahan satu kemahiran khusus setiap minggu, contohnya membaca perkataan, kefahaman atau ketepatan bentuk huruf.","Jika kesukaran berterusan selepas sokongan pengajaran yang sesuai, rujuk sekolah, ahli psikologi pendidikan atau profesional sokongan pembelajaran."],"情绪调节困难":["Kesukaran mengawal emosi","Anak mungkin belum menguasai kemahiran meluahkan, menunggu, beralih atau bertenang.","Pastikan keselamatan dan bantu bertenang dahulu; kemudian ajar tingkah laku alternatif, ayat meluahkan dan cara memulihkan hubungan.","Rekod situasi pencetus, respons orang dewasa, sokongan yang diperlukan untuk pulih dan cara yang berkesan.","Jika emosi atau tingkah laku kerap, kuat, berterusan, atau menjejaskan keselamatan dan kehidupan harian, dapatkan nasihat profesional."],"睡眠／视力／身体健康疑虑":["Kebimbangan tidur / penglihatan / kesihatan fizikal","Tabiat hidup atau keadaan fizikal mungkin menjejaskan pembelajaran dan emosi; soal selidik tidak dapat mendiagnosis.","Rekod masa gejala muncul, kekerapan dan kesannya terhadap kehidupan harian.","Bawa pemerhatian khusus untuk berbincang dengan pakar pediatrik atau profesional penjagaan mata.","Untuk masalah tidur berterusan, kebimbangan penglihatan atau ketidakselesaan fizikal yang ketara, aturkan penilaian perubatan yang sesuai."]}}}};
+const LANGS = [["zh","中文"],["en","EN"],["ms","BM"]];
+const UI = {
+ zh:{
+  appTitle:"儿童个性化成长评估", brand:"成长小芽", subtitle:"父母观察版 + 儿童自评版",
+  lead:"一步一步回答问题，完成后自动计分，给出每个维度的解读和培养建议。帮助你发现孩子的兴趣与优势，以及目前还需要帮助的技能。",
+  nameLbl:"孩子的称呼（选填）", namePh:"例如：小明",
+  verP:"父母观察版", verC:"儿童自评版", shortP:"父母版", shortC:"儿童版",
+  whoP:"由熟悉孩子日常表现的成人填写", whoC:"约6–7岁以上，成人可读题但不暗示答案",
+  step1:"第一步", step2:"第二步（适龄孩子）",
+  dims:"个维度", qs:"题", mins:"分钟", about:"约",
+  done:"已完成 🎉", inprog:(a,b)=>`进行中：${a} / ${b} 个维度`, notStarted:"尚未开始",
+  start:"开始填写", cont:"继续填写", edit:"修改答案", viewRes:"查看结果",
+  sample:"查看示例结果", reset:"清除所有答案", resetQ:"确定清除？", resetYes:"确定清除", cancel:"取消", cleared:"已清除所有答案",
+  before:"填写前请先了解",
+  fTime:"观察时间", fTimeT:"以最近4–6周的日常表现为主，不要只根据某一天或一次事件评分。没有足够观察机会，请选“无法判断”。",
+  fScale:"统一评分", fScaleT:"所有题目都按正向设计，高分代表该项较常表现出来。",
+  fWho:"谁适合填写", fWhoT:"父母版建议分别回顾家庭、学校和活动场景。3岁幼儿不适合独立填写，可由家长观察。",
+  fRule:"填写原则", fRuleT:"不要在孩子面前把低分称为缺点。用“目前还需要帮助的技能”取代“懒惰、不专心、不聪明”等标签。",
+  limitB:"重要限制：", limit:"这不是经过临床验证的标准化量表，不可用于诊断ADHD、焦虑、抑郁、学习障碍、成瘾、近视等，也不能验证DNA报告。若困难持续影响学习、睡眠、情绪或人际关系，请与老师、儿科医生或合资格专业人士讨论。",
+  flow:"建议使用流程",
+  flowItems:[["填写父母版","每页一个维度，3道题"],["孩子填写儿童版","独立或在中立协助下"],["查看结果页","两版都完成可看对比"],["选择目标","1–2个优势和1–2个支持目标"],["连续尝试4–6周","用行动计划记录"],["复盘后再调整","继续、调整或寻求支持"]],
+  localNote:"答案只保存在这台设备的浏览器中，不会上传。",
+  scale:["几乎从不","偶尔","有时","经常","几乎总是","无法判断"],
+  back:"← 返回首页", stepOf:(v,a,b)=>`${v} · 第 ${a} / ${b} 步`,
+  hintP:"按最近4–6周的日常表现评分。", hintC:"按你自己的真实感受选择，没有标准答案哦！",
+  noteP:"情境／例子（选填）", noteC:"我想举的例子（选填）", notePhP:"例如：在家做手工时能专心20分钟", notePhC:"例如：我喜欢搭乐高城堡",
+  prev:"上一步", next:"下一步", finish:"完成并查看结果",
+  missing:n=>`还有 ${n} 题未选，可跳过（计为无法判断）`, pageDone:"本页完成啦！",
+  cheers:["加油，你做得很好！","慢慢来，想一想再选～","每个答案都没有对错！","快到终点啦！","好棒，继续！"],
+  finished:v=>`${v}已完成！`,
+  resEyebrow:"评估结果", report:n=>n?`${n}的成长观察报告`:"成长观察报告",
+  resLead:"不要把分数当作标签。从一项优势和一项需要支持的技能开始，尝试4–6周，再观察变化。",
+  sampleBanner:"正在查看示例数据，不是你的答案。", exitSample:"退出示例",
+  tabP:"父母版结果", tabC:"儿童版结果", tabX:"两版对比", tabPlan:"行动计划",
+  strengths:"最闪亮的优势", support:"目前需要更多支持",
+  noStrength:"暂未有平均分达到4.0的维度。可以多提供不同体验，再观察孩子主动投入什么。", noSupport:"没有平均分低于3.0的维度。",
+  band:{s:"优势",m:"视情境",w:"需要支持",n:"资料不足"},
+  bandP:{s:"较常观察到，可继续发展",m:"表现视情境而定，继续观察",w:"目前可能需要更多支持",n:"资料不足"},
+  bandC:{s:"孩子经常感受到这是自己的优势或习惯",m:"有时做得到；看看什么情境更容易",w:"孩子可能希望在这方面得到更多帮助",n:"还没有足够答案"},
+  dimsTitle:v=>`${v}各维度结果`, dimsNote:"空白／N/A不计入平均分；分数是观察线索，不是诊断或同龄排名。",
+  catAvg:"大类平均", valid:"有效题数", tipP:"建议培养方向：", tipC:"可以一起尝试：", example:"观察例子：",
+  flagsTitle:"值得特别留意的方面", flagsNote:"以下根据较低分的维度自动列出，只是观察线索，不是诊断。", related:"相关维度：",
+  meaning:"可能的含义", todo:"建议做法", goal:"可以记录", when:"何时寻求支持",
+  guideTitle:"分数怎么看", gHead:["观察结果","可能的含义（非诊断）","建议做法","可以记录的目标例子","何时考虑寻求额外支持"],
+  incomplete:(v,a,b)=>`${v}还有维度未完成（${a} / ${b}）。`,
+  cmpNote:"把孩子的自评和父母的观察放在一起，找出相同点和不同点。父母分数取对应维度的平均（对应关系为近似对照）。相差1分或以上会被标出。",
+  cmpHead:["儿童版维度","对应父母版维度","孩子自评","父母观察","差异"], parentHigher:"父母更高", childHigher:"孩子更高", cmpSame:"两版结果大致一致，没有相差1分以上的维度。",
+  planTitle:"4–6周家庭行动计划", planNote:"选择一项优势和一项需要支持的技能，尝试4–6周，再观察变化。",
+  planFields:["孩子的优势／兴趣","本阶段只选一个支持目标","我们准备尝试的方法","什么时候／在哪里练习","孩子觉得怎样才算有帮助","4–6周后观察到的变化","下一步：继续／调整／寻求支持"],
+  choose:"请选择", copy:"复制结果摘要", copyNote:"可粘贴给老师或家人。", copied:"已复制", copyFail:"复制失败，请手动选择文字复制",
+  footer:"本工具不是经过临床验证的标准化量表。若困难持续影响学习、睡眠、情绪或人际关系，请与老师、儿科医生或合资格专业人士讨论。",
+  sampleName:"示例孩子", sampleNotes:["周末会花一个多小时画漫画，还会给角色配对白。","早上穿衣、刷牙、拿书包三件事常常要提醒第二步。","早晨流程做成三格图卡，每完成一步自己贴贴纸。","上学日早上7:00–7:20，在门口。"],
+  sumTitle:"儿童个性化成长评估结果", distLbl:"维度分布"
+ },
+ en:{
+  appTitle:"Child Growth Check-in", brand:"Little Sprout", subtitle:"Parent observation + child self-report",
+  lead:"Answer step by step and get automatic scores, an interpretation for every area, and ideas for supporting your child. It helps you spot interests and strengths, and the skills your child still needs help with.",
+  nameLbl:"Child's name (optional)", namePh:"e.g. Mia",
+  verP:"Parent Observation", verC:"Child Self-Report", shortP:"Parent", shortC:"Child",
+  whoP:"Filled in by an adult who knows the child's daily life well", whoC:"For about age 6–7+; an adult may read aloud but shouldn't hint",
+  step1:"Step 1", step2:"Step 2 (for older kids)",
+  dims:"areas", qs:"questions", mins:"min", about:"about",
+  done:"Completed 🎉", inprog:(a,b)=>`In progress: ${a} / ${b} areas`, notStarted:"Not started",
+  start:"Start", cont:"Continue", edit:"Edit answers", viewRes:"See results",
+  sample:"See sample results", reset:"Clear all answers", resetQ:"Clear everything?", resetYes:"Yes, clear", cancel:"Cancel", cleared:"All answers cleared",
+  before:"Before you begin",
+  fTime:"Time frame", fTimeT:"Base answers on the last 4–6 weeks, not on a single day or event. If you haven't had a chance to observe something, choose \"Can't tell\".",
+  fScale:"Rating scale", fScaleT:"Every item is worded positively, so a higher score means it shows up more often.",
+  fWho:"Who should answer", fWhoT:"For the parent version, think about home, school and activities. Children around 3 shouldn't answer alone; parents can observe instead.",
+  fRule:"Ground rules", fRuleT:"Don't call low scores weaknesses in front of your child. Say \"a skill they still need help with\" instead of labels like lazy or not smart.",
+  limitB:"Important: ", limit:"This is not a clinically validated standardised scale. It cannot diagnose ADHD, anxiety, depression, learning disabilities, addiction, myopia and so on, and cannot verify DNA reports. If difficulties keep affecting learning, sleep, emotions or relationships, talk with a teacher, paediatrician or qualified professional.",
+  flow:"How to use it",
+  flowItems:[["Do the parent version","One area per page, 3 questions"],["Child does their version","On their own or with neutral help"],["Read the results","Compare once both are done"],["Pick goals","1–2 strengths and 1–2 support goals"],["Try for 4–6 weeks","Track it in the action plan"],["Review and adjust","Continue, adjust or seek support"]],
+  localNote:"Answers are stored only in this device's browser and never uploaded.",
+  scale:["Almost never","Rarely","Sometimes","Often","Almost always","Can't tell"],
+  back:"← Home", stepOf:(v,a,b)=>`${v} · Step ${a} / ${b}`,
+  hintP:"Rate based on everyday behaviour over the last 4–6 weeks.", hintC:"Pick what feels true for you. There are no right answers!",
+  noteP:"Situation / example (optional)", noteC:"An example I want to share (optional)", notePhP:"e.g. Focuses on crafts at home for 20 minutes", notePhC:"e.g. I like building Lego castles",
+  prev:"Back", next:"Next", finish:"Finish & see results",
+  missing:n=>`${n} left unanswered. You can skip (counts as Can't tell)`, pageDone:"This page is done!",
+  cheers:["You're doing great!","Take your time and think it over.","There are no wrong answers!","Almost at the finish line!","Awesome, keep going!"],
+  finished:v=>`${v} version done!`,
+  resEyebrow:"Results", report:n=>n?`${n}'s Growth Report`:"Growth Report",
+  resLead:"Scores are not labels. Start with one strength and one skill to support, try it for 4–6 weeks, then look at what changed.",
+  sampleBanner:"You're viewing sample data, not your answers.", exitSample:"Exit sample",
+  tabP:"Parent results", tabC:"Child results", tabX:"Compare", tabPlan:"Action plan",
+  strengths:"Shining strengths", support:"Needs more support for now",
+  noStrength:"No area averages 4.0 yet. Offer a range of experiences and watch what your child dives into.", noSupport:"No area averages below 3.0.",
+  band:{s:"Strength",m:"Depends",w:"Needs support",n:"Not enough data"},
+  bandP:{s:"Seen often; keep building on it",m:"Varies by situation; keep observing",w:"May need more support right now",n:"Not enough data"},
+  bandC:{s:"Your child often feels this is a strength or habit",m:"Sometimes; see which situations make it easier",w:"Your child may want more help here",n:"Not enough answers yet"},
+  dimsTitle:v=>`${v} results by area`, dimsNote:"Blank / N/A answers aren't counted. Scores are observation clues, not a diagnosis or a ranking against peers.",
+  catAvg:"Category avg", valid:"answered", tipP:"Ways to support: ", tipC:"Try together: ", example:"Example: ",
+  flagsTitle:"Areas worth a closer look", flagsNote:"Listed automatically from lower-scoring areas. These are clues, not a diagnosis.", related:"Related areas: ",
+  meaning:"What it may mean", todo:"What to try", goal:"What to track", when:"When to seek support",
+  guideTitle:"How to read the scores", gHead:["Result","What it may mean (not a diagnosis)","What to try","Example goal to track","When to consider extra support"],
+  incomplete:(v,a,b)=>`The ${v} version still has unfinished areas (${a} / ${b}).`,
+  cmpNote:"See the child's self-report next to the parent's observations to find what matches and what differs. Parent scores average the matching areas (an approximate pairing). Gaps of 1 point or more are flagged.",
+  cmpHead:["Child area","Matching parent areas","Child","Parent","Gap"], parentHigher:"Parent higher", childHigher:"Child higher", cmpSame:"Both versions broadly agree; no gaps of 1 point or more.",
+  planTitle:"4–6 Week Family Action Plan", planNote:"Pick one strength and one skill to support, try for 4–6 weeks, then review.",
+  planFields:["Child's strength / interest","The one support goal for now","What we'll try","When / where we'll practise","What would feel helpful to my child","Changes seen after 4–6 weeks","Next: continue / adjust / seek support"],
+  choose:"Choose…", copy:"Copy summary", copyNote:"Paste it to a teacher or family member.", copied:"Copied", copyFail:"Couldn't copy. Please select the text manually.",
+  footer:"This tool is not a clinically validated standardised scale. If difficulties keep affecting learning, sleep, emotions or relationships, talk with a teacher, paediatrician or qualified professional.",
+  sampleName:"Sample Child", sampleNotes:["Spends over an hour drawing comics at weekends, and writes dialogue for the characters.","Getting dressed, brushing teeth and grabbing the school bag: often needs a reminder for step two.","Turn the morning routine into a 3-picture card; child adds a sticker after each step.","School days 7:00–7:20 am, by the front door."],
+  sumTitle:"Child Growth Check-in results", distLbl:"Area spread"
+ },
+ ms:{
+  appTitle:"Penilaian Tumbesaran Anak", brand:"Tunas Kecil", subtitle:"Versi pemerhatian ibu bapa + penilaian kendiri anak",
+  lead:"Jawab langkah demi langkah dan dapatkan markah automatik, tafsiran setiap aspek, serta cadangan untuk menyokong anak. Ia membantu anda mengenal pasti minat dan kekuatan anak, serta kemahiran yang masih memerlukan bantuan.",
+  nameLbl:"Nama panggilan anak (pilihan)", namePh:"cth. Aisyah",
+  verP:"Pemerhatian Ibu Bapa", verC:"Penilaian Kendiri Anak", shortP:"Ibu bapa", shortC:"Anak",
+  whoP:"Diisi oleh orang dewasa yang mengenali rutin harian anak", whoC:"Untuk sekitar umur 6–7 tahun ke atas; orang dewasa boleh membacakan tanpa membayangkan jawapan",
+  step1:"Langkah 1", step2:"Langkah 2 (anak yang sesuai umur)",
+  dims:"aspek", qs:"soalan", mins:"minit", about:"kira-kira",
+  done:"Selesai 🎉", inprog:(a,b)=>`Sedang diisi: ${a} / ${b} aspek`, notStarted:"Belum bermula",
+  start:"Mula", cont:"Sambung", edit:"Ubah jawapan", viewRes:"Lihat keputusan",
+  sample:"Lihat contoh keputusan", reset:"Padam semua jawapan", resetQ:"Padam semua?", resetYes:"Ya, padam", cancel:"Batal", cleared:"Semua jawapan dipadam",
+  before:"Sebelum bermula",
+  fTime:"Tempoh pemerhatian", fTimeT:"Berdasarkan tingkah laku harian 4–6 minggu kebelakangan, bukan satu hari atau satu peristiwa. Jika tiada peluang memerhati, pilih \"Tidak pasti\".",
+  fScale:"Skala penilaian", fScaleT:"Semua soalan ditulis secara positif; markah tinggi bermaksud ia lebih kerap ditunjukkan.",
+  fWho:"Siapa yang sesuai mengisi", fWhoT:"Untuk versi ibu bapa, imbas situasi di rumah, sekolah dan aktiviti. Kanak-kanak sekitar 3 tahun tidak sesuai mengisi sendiri; ibu bapa boleh memerhati.",
+  fRule:"Prinsip mengisi", fRuleT:"Jangan sebut markah rendah sebagai kelemahan di depan anak. Gunakan \"kemahiran yang masih perlukan bantuan\" dan bukan label seperti malas atau tidak pandai.",
+  limitB:"Penting: ", limit:"Ini bukan skala piawai yang disahkan secara klinikal. Ia tidak boleh mendiagnosis ADHD, kebimbangan, kemurungan, masalah pembelajaran, ketagihan, rabun dan sebagainya, dan tidak boleh mengesahkan laporan DNA. Jika kesukaran berterusan menjejaskan pembelajaran, tidur, emosi atau hubungan, bincang dengan guru, pakar pediatrik atau profesional bertauliah.",
+  flow:"Cara penggunaan",
+  flowItems:[["Isi versi ibu bapa","Satu aspek setiap halaman, 3 soalan"],["Anak mengisi versinya","Sendiri atau dengan bantuan neutral"],["Baca keputusan","Bandingkan selepas kedua-duanya siap"],["Pilih matlamat","1–2 kekuatan dan 1–2 matlamat sokongan"],["Cuba selama 4–6 minggu","Rekod dalam pelan tindakan"],["Semak dan laraskan","Teruskan, laraskan atau dapatkan sokongan"]],
+  localNote:"Jawapan hanya disimpan dalam pelayar peranti ini dan tidak dimuat naik.",
+  scale:["Hampir tidak pernah","Jarang","Kadang-kadang","Kerap","Hampir selalu","Tidak pasti"],
+  back:"← Laman utama", stepOf:(v,a,b)=>`${v} · Langkah ${a} / ${b}`,
+  hintP:"Nilai berdasarkan tingkah laku harian 4–6 minggu kebelakangan.", hintC:"Pilih ikut perasaan sebenar kamu. Tiada jawapan betul atau salah!",
+  noteP:"Situasi / contoh (pilihan)", noteC:"Contoh yang saya mahu kongsi (pilihan)", notePhP:"cth. Boleh fokus membuat kraf di rumah selama 20 minit", notePhC:"cth. Saya suka membina istana Lego",
+  prev:"Kembali", next:"Seterusnya", finish:"Selesai & lihat keputusan",
+  missing:n=>`${n} soalan belum dijawab. Boleh langkau (dikira Tidak pasti)`, pageDone:"Halaman ini selesai!",
+  cheers:["Bagus, teruskan!","Ambil masa, fikir dahulu.","Tiada jawapan yang salah!","Hampir sampai ke garisan penamat!","Hebat, teruskan!"],
+  finished:v=>`Versi ${v} selesai!`,
+  resEyebrow:"Keputusan", report:n=>n?`Laporan Tumbesaran ${n}`:"Laporan Tumbesaran",
+  resLead:"Markah bukan label. Mulakan dengan satu kekuatan dan satu kemahiran untuk disokong, cuba selama 4–6 minggu, kemudian lihat perubahannya.",
+  sampleBanner:"Anda sedang melihat data contoh, bukan jawapan anda.", exitSample:"Keluar contoh",
+  tabP:"Keputusan ibu bapa", tabC:"Keputusan anak", tabX:"Perbandingan", tabPlan:"Pelan tindakan",
+  strengths:"Kekuatan paling menyerlah", support:"Perlukan lebih sokongan buat masa ini",
+  noStrength:"Belum ada aspek dengan purata 4.0. Sediakan pelbagai pengalaman dan perhatikan apa yang anak ceburi sendiri.", noSupport:"Tiada aspek dengan purata bawah 3.0.",
+  band:{s:"Kekuatan",m:"Bergantung situasi",w:"Perlu sokongan",n:"Data tidak cukup"},
+  bandP:{s:"Kerap diperhatikan; boleh terus dikembangkan",m:"Bergantung pada situasi; teruskan memerhati",w:"Mungkin memerlukan lebih sokongan buat masa ini",n:"Data tidak mencukupi"},
+  bandC:{s:"Anak kerap merasakan ini kekuatan atau tabiatnya",m:"Kadang-kadang boleh; lihat situasi mana lebih mudah",w:"Anak mungkin mahu lebih bantuan dalam aspek ini",n:"Belum cukup jawapan"},
+  dimsTitle:v=>`Keputusan ${v} mengikut aspek`, dimsNote:"Jawapan kosong / N/A tidak dikira. Markah ialah petunjuk pemerhatian, bukan diagnosis atau kedudukan berbanding rakan sebaya.",
+  catAvg:"Purata kategori", valid:"dijawab", tipP:"Cara menyokong: ", tipC:"Cuba bersama: ", example:"Contoh: ",
+  flagsTitle:"Aspek yang wajar diberi perhatian", flagsNote:"Disenaraikan secara automatik daripada aspek bermarkah rendah. Ini petunjuk, bukan diagnosis.", related:"Aspek berkaitan: ",
+  meaning:"Kemungkinan maksud", todo:"Cadangan tindakan", goal:"Perkara untuk direkod", when:"Bila perlu sokongan",
+  guideTitle:"Cara membaca markah", gHead:["Keputusan","Kemungkinan maksud (bukan diagnosis)","Cadangan tindakan","Contoh matlamat untuk direkod","Bila mempertimbangkan sokongan tambahan"],
+  incomplete:(v,a,b)=>`Versi ${v} masih ada aspek belum selesai (${a} / ${b}).`,
+  cmpNote:"Letakkan penilaian kendiri anak bersebelahan pemerhatian ibu bapa untuk melihat persamaan dan perbezaan. Markah ibu bapa ialah purata aspek yang sepadan (padanan anggaran). Beza 1 markah atau lebih akan ditanda.",
+  cmpHead:["Aspek anak","Aspek ibu bapa sepadan","Anak","Ibu bapa","Beza"], parentHigher:"Ibu bapa lebih tinggi", childHigher:"Anak lebih tinggi", cmpSame:"Kedua-dua versi lebih kurang sama; tiada beza 1 markah atau lebih.",
+  planTitle:"Pelan Tindakan Keluarga 4–6 Minggu", planNote:"Pilih satu kekuatan dan satu kemahiran untuk disokong, cuba selama 4–6 minggu, kemudian semak semula.",
+  planFields:["Kekuatan / minat anak","Satu matlamat sokongan untuk peringkat ini","Cara yang akan kami cuba","Bila / di mana berlatih","Apa yang anak rasa membantu","Perubahan selepas 4–6 minggu","Seterusnya: teruskan / laraskan / dapatkan sokongan"],
+  choose:"Pilih…", copy:"Salin ringkasan", copyNote:"Boleh ditampal untuk guru atau keluarga.", copied:"Disalin", copyFail:"Gagal menyalin. Sila pilih teks secara manual.",
+  footer:"Alat ini bukan skala piawai yang disahkan secara klinikal. Jika kesukaran berterusan menjejaskan pembelajaran, tidur, emosi atau hubungan, bincang dengan guru, pakar pediatrik atau profesional bertauliah.",
+  sampleName:"Anak Contoh", sampleNotes:["Hujung minggu melukis komik lebih sejam dan menulis dialog untuk watak.","Berpakaian, memberus gigi dan mengambil beg sekolah: selalu perlu diingatkan langkah kedua.","Jadikan rutin pagi kad 3 gambar; anak tampal pelekat selepas setiap langkah.","Hari sekolah 7:00–7:20 pagi, di pintu depan."],
+  sumTitle:"Keputusan Penilaian Tumbesaran Anak", distLbl:"Taburan aspek"
+ }
+};
+
+/* ---------- data & language helpers ---------- */
+const KEY = "child-growth-eval-v1", LKEY = "child-growth-lang";
+let lang = "zh";
+try{ const l = localStorage.getItem(LKEY); if(l && UI[l]) lang = l; else { const n=(navigator.language||"").toLowerCase(); lang = n.startsWith("zh")?"zh":n.startsWith("ms")||n.startsWith("id")?"ms":n?"en":"zh"; } }catch(e){}
+const t = k => UI[lang][k];
+const DIMS = {P:DATA.P, C:DATA.C};
+const catName = zh => lang==="zh" ? zh : DATA.L[lang].cats[zh];
+const dimName = (v,i) => lang==="zh" ? DIMS[v][i].d : DATA.L[lang][v][i][0];
+const dimQ = (v,i) => lang==="zh" ? DIMS[v][i].q : DATA.L[lang][v][i][1];
+const dimTip = (v,i) => lang==="zh" ? DIMS[v][i].tip : DATA.L[lang][v][i][2];
+const GZ = Object.fromEntries(DATA.G.map(r=>[r[0],r]));
+function gRow(key){ const r = lang==="zh" ? GZ[key] : DATA.L[lang].G[key]; return {label:r[0],meaning:r[1],todo:r[2],goal:r[3],when:r[4]}; }
+const vName = v => t(v==="P"?"shortP":"shortC");
+const idx = (v,zh) => DIMS[v].findIndex(d=>d.d===zh);
+
+const PAIRS = {
+  "我喜欢的活动":["艺术与创作","创业与主动解决问题"], "理解和提问":["理解与推理","解决问题"], "记住步骤":["工作记忆","听觉／言语记忆"],
+  "专心与回到任务":["注意与回到任务"], "阅读与表达":["阅读","语言理解"], "整理与责任":["自律与日常责任"],
+  "坚持与面对错误":["毅力与坚持","面对错误"], "和别人相处":["社交与协商"], "说出感受":["情感表达与共情反应","情绪低落时的恢复"],
+  "面对变化和失望":["对变化的适应","心理弹性"], "好奇与尝试":["好奇心","探索意愿"], "睡眠与屏幕平衡":["睡眠与白天精神","屏幕使用平衡"]
+};
+const FLAGS = [
+  {key:"注意力／任务管理困难", P:["工作记忆","注意与回到任务","听觉／言语记忆"], C:["记住步骤","专心与回到任务"]},
+  {key:"阅读／拼写持续困难", P:["阅读","拼写与书写"], C:["阅读与表达"]},
+  {key:"情绪调节困难", P:["愤怒时的行为控制","易怒／挫折反应","情绪低落时的恢复","心理弹性","压力应对"], C:["说出感受","面对变化和失望"]},
+  {key:"睡眠／视力／身体健康疑虑", P:["睡眠与白天精神","屏幕使用平衡","视力关注（需专业检查）","健康生活习惯"], C:["睡眠与屏幕平衡"]}
+];
+const CATCOL = {"先天优势与潜能":"var(--sun)","学习模式与认知":"var(--blue)","自我管理":"var(--grass)","情绪与动机":"var(--coral)","健康与生活习惯":"var(--grape)",
+  "我的兴趣":"var(--sun)","我的学习":"var(--blue)","我的自我管理":"var(--grass)","我的情绪":"var(--coral)","我的生活":"var(--grape)"};
+
+function blank(){return {name:"", P:{a:{},n:{},step:0}, C:{a:{},n:{},step:0}, plan:{}};}
+let S = blank();
+try{ const raw = localStorage.getItem(KEY); if(raw){ S = Object.assign(blank(), JSON.parse(raw)); } }catch(e){}
+let view = "home", cur = "P", resTab = "P", sample = null;
+const st = () => sample || S;
+function save(){ if(sample) return; try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function toast(msg){const el=document.createElement("div");el.className="toast";el.textContent=msg;document.body.appendChild(el);setTimeout(()=>el.remove(),1800);}
+const filled = a => (a||[]).filter(x=>x!==undefined&&x!==null).length;
+function answeredCount(v,s=st()){let n=0;for(const k in s[v].a)n+=filled(s[v].a[k]);return n;}
+const totalQ = v => DIMS[v].reduce((n,d)=>n+d.q.length,0);
+const dimDone = (v,i,s=st()) => filled(s[v].a[i])===DIMS[v][i].q.length;
+const stepsDone = (v,s=st()) => DIMS[v].filter((_,i)=>dimDone(v,i,s)).length;
+const isComplete = (v,s=st()) => !!s[v].finished || stepsDone(v,s)===DIMS[v].length;
+function score(v,i,s=st()){ const a=(s[v].a[i]||[]).filter(x=>typeof x==="number"); return a.length?{avg:a.reduce((x,y)=>x+y,0)/a.length,n:a.length}:{avg:null,n:0}; }
+const band = a => a===null?"n":a>=4?"s":a>=3?"m":"w";
+const BANDG = {s:"维度平均分 4.0–5.0", m:"维度平均分 3.0–3.9", w:"维度平均分 1.0–2.9", n:"资料不足／N/A"};
+const BANDCOL = {s:"var(--grass)",m:"var(--sun)",w:"var(--grape)",n:"var(--none)"};
+const fmt = x => x===null ? "—" : x.toFixed(1);
+function categories(v){const out=[];DIMS[v].forEach((d,i)=>{let c=out.find(o=>o.c===d.c);if(!c){c={c:d.c,idx:[]};out.push(c);}c.idx.push(i);});return out;}
+
+/* ---------- original drawings ---------- */
+const FACECOL = ["#B9B4F5","#9CCBFF","#FFE07A","#A6E7B4","#5FD39A"];
+function face(n){
+  if(n==="na") return `<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="#E3E6F2" stroke="#26284A" stroke-width="2.5"/><text x="20" y="27" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="20" fill="#26284A">?</text></svg>`;
+  const mouths = ["M13 28 Q20 21 27 28","M14 27 Q20 24 26 27","M14 26 L26 26","M13 24 Q20 30 27 24","M12 23 Q20 34 28 23 Z"];
+  const fill = n===5 ? `fill="#26284A"` : `fill="none"`;
+  const cheeks = n>=4 ? `<circle cx="10.5" cy="23" r="2.6" fill="#FF9FC6" opacity=".8"/><circle cx="29.5" cy="23" r="2.6" fill="#FF9FC6" opacity=".8"/>` : "";
+  const eyes = n===5 ? `<path d="M11.5 17 Q14 13.5 16.5 17" stroke="#26284A" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M23.5 17 Q26 13.5 28.5 17" stroke="#26284A" stroke-width="2.5" fill="none" stroke-linecap="round"/>` : `<circle cx="14" cy="16.5" r="2.4" fill="#26284A"/><circle cx="26" cy="16.5" r="2.4" fill="#26284A"/>`;
+  return `<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17" fill="${FACECOL[n-1]}" stroke="#26284A" stroke-width="2.5"/>${cheeks}${eyes}<path d="${mouths[n-1]}" stroke="#26284A" stroke-width="2.5" ${fill} stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+function sprout(mood="happy", body="#7DD87F"){
+  const mouth = mood==="cheer" ? `<path d="M50 84 Q60 98 70 84 Z" fill="#26284A"/>` : `<path d="M50 84 Q60 93 70 84" stroke="#26284A" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+  const arms = mood==="cheer" ? `<path d="M26 84 Q14 66 18 56" stroke="#26284A" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M94 84 Q106 66 102 56" stroke="#26284A" stroke-width="4" fill="none" stroke-linecap="round"/>` : `<path d="M26 92 Q16 98 18 108" stroke="#26284A" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M94 92 Q104 98 102 108" stroke="#26284A" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+  return `<svg viewBox="0 0 120 140" class="mascot bob" aria-hidden="true">
+    <ellipse cx="60" cy="134" rx="34" ry="5" fill="#26284A" opacity=".15"/>
+    <path d="M60 40 Q58 26 60 16" stroke="#26284A" stroke-width="4" fill="none"/>
+    <path d="M60 22 Q40 2 22 12 Q34 32 60 22 Z" fill="#5FD39A" stroke="#26284A" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M60 18 Q78 -2 98 8 Q86 30 60 18 Z" fill="#A6E7B4" stroke="#26284A" stroke-width="4" stroke-linejoin="round"/>
+    ${arms}
+    <path d="M60 36 C96 36 100 70 98 92 C96 118 80 128 60 128 C40 128 24 118 22 92 C20 70 24 36 60 36 Z" fill="${body}" stroke="#26284A" stroke-width="4"/>
+    <ellipse cx="60" cy="100" rx="22" ry="18" fill="#fff" opacity=".35"/>
+    <circle cx="46" cy="70" r="6" fill="#26284A"/><circle cx="74" cy="70" r="6" fill="#26284A"/>
+    <circle cx="48" cy="68" r="2" fill="#fff"/><circle cx="76" cy="68" r="2" fill="#fff"/>
+    <circle cx="36" cy="82" r="5" fill="#FF9FC6" opacity=".8"/><circle cx="84" cy="82" r="5" fill="#FF9FC6" opacity=".8"/>
+    ${mouth}
+  </svg>`;
+}
+const star = (c,s=22) => `<svg viewBox="0 0 24 24" width="${s}" height="${s}" aria-hidden="true"><path d="M12 2.5l2.8 6 6.5.7-4.9 4.4 1.4 6.4L12 16.8 6.2 20l1.4-6.4L2.7 9.2l6.5-.7z" fill="${c}" stroke="#26284A" stroke-width="2" stroke-linejoin="round"/></svg>`;
+const cloud = `<svg viewBox="0 0 100 50" width="100" aria-hidden="true"><path d="M20 42 Q4 42 8 30 Q10 20 22 22 Q26 8 42 10 Q56 4 64 18 Q80 14 84 28 Q96 30 92 40 Q90 44 80 42 Z" fill="#fff" stroke="#26284A" stroke-width="3" stroke-linejoin="round" opacity=".95"/></svg>`;
+const icons = {
+  time:`<svg viewBox="0 0 24 24" width="24"><circle cx="12" cy="12" r="8.5" fill="#fff" stroke="#26284A" stroke-width="2.2"/><path d="M12 7v5l3 2" stroke="#26284A" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg>`,
+  scale:`<svg viewBox="0 0 24 24" width="24"><rect x="3" y="14" width="3.5" height="6" rx="1" fill="#fff" stroke="#26284A" stroke-width="2"/><rect x="10" y="9" width="3.5" height="11" rx="1" fill="#fff" stroke="#26284A" stroke-width="2"/><rect x="17" y="4" width="3.5" height="16" rx="1" fill="#fff" stroke="#26284A" stroke-width="2"/></svg>`,
+  who:`<svg viewBox="0 0 24 24" width="24"><circle cx="9" cy="8" r="3.5" fill="#fff" stroke="#26284A" stroke-width="2"/><circle cx="17" cy="11" r="2.6" fill="#fff" stroke="#26284A" stroke-width="2"/><path d="M3 20c0-4 3-6 6-6s6 2 6 6M14 20c0-3 1.5-4.5 3-4.5s3.5 1.5 3.5 4.5" stroke="#26284A" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
+  heart:`<svg viewBox="0 0 24 24" width="24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="#fff" stroke="#26284A" stroke-width="2.2" stroke-linejoin="round"/></svg>`
+};
+function confetti(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const c=document.createElement("canvas");c.className="confetti";document.body.appendChild(c);
+  const x=c.getContext("2d"),W=c.width=innerWidth,H=c.height=innerHeight,cols=["#FFC83D","#FF7A6B","#38B67A","#4D8DF7","#8E6CD8","#FF9FC6"];
+  const ps=Array.from({length:120},()=>({x:W/2,y:H*.35,vx:(Math.random()-.5)*14,vy:-Math.random()*12-4,r:Math.random()*6+4,c:cols[Math.random()*6|0],a:Math.random()*6}));
+  let f=0;(function tick(){x.clearRect(0,0,W,H);ps.forEach(p=>{p.vy+=.35;p.x+=p.vx;p.y+=p.vy;p.a+=.2;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6);x.restore();});if(++f<110)requestAnimationFrame(tick);else c.remove();})();
+}
+
+/* ---------- views ---------- */
+function topbar(){
+  return `<div class="topbar"><div class="logo">${star("var(--sun)",26)}<span>${t("brand")}</span></div><span class="spacer"></span>
+    <div class="langs" role="group" aria-label="Language">${LANGS.map(([k,l])=>`<button type="button" data-act="lang" data-l="${k}" aria-pressed="${lang===k}">${l}</button>`).join("")}</div></div>`;
+}
+function renderHome(){
+  const s=S;
+  const verCard = v => {
+    const done=stepsDone(v,s), all=DIMS[v].length, comp=isComplete(v,s), started=answeredCount(v,s)>0;
+    return `<div class="card ver ${v.toLowerCase()}">
+      <div class="badge">${v==="P"?sprout("happy","#7DD87F"):sprout("cheer","#FFB4A8")}</div>
+      <span class="eyebrow">${t(v==="P"?"step1":"step2")}</span>
+      <h2>${t(v==="P"?"verP":"verC")}</h2>
+      <p class="small muted">${t(v==="P"?"whoP":"whoC")}</p>
+      <div class="meta"><span><b>${all}</b> ${t("dims")}</span><span><b>${totalQ(v)}</b> ${t("qs")}</span><span>${t("about")} <b>${v==="P"?"20–30":"10–15"}</b> ${t("mins")}</span></div>
+      <div class="meter" aria-hidden="true"><i style="width:${Math.round(done/all*100)}%"></i></div>
+      <div class="small muted"><b>${comp?t("done"):started?t("inprog")(done,all):t("notStarted")}</b></div>
+      <div class="row">
+        <button class="btn primary" data-act="start" data-v="${v}">${comp?t("edit"):started?t("cont"):t("start")}</button>
+        ${started?`<button class="btn" data-act="results" data-v="${v}">${t("viewRes")}</button>`:""}
+      </div></div>`;
+  };
+  const any = answeredCount("P",s)||answeredCount("C",s);
+  const flowCols = ["var(--sun)","var(--coral)","var(--blue)","var(--grass)","var(--grape)","var(--pink)"];
+  return `${topbar()}
+  <header class="card hero">
+    <span class="deco" style="right:150px;top:-6px;opacity:.9">${cloud}</span>
+    <span class="deco" style="right:12px;bottom:10px">${star("var(--pink)",20)}</span>
+    <div><span class="eyebrow">${t("subtitle")}</span><h1>${t("appTitle")}</h1><p class="lead">${t("lead")}</p></div>
+    ${sprout("cheer")}
+  </header>
+  <div class="card namebox"><label for="childname">${t("nameLbl")}</label><input type="text" id="childname" value="${esc(s.name)}" placeholder="${esc(t("namePh"))}" maxlength="24"></div>
+  <section class="versions">${verCard("P")}${verCard("C")}</section>
+  <div class="row">
+    <button class="btn sun" data-act="sample">${star("#fff",18)} ${t("sample")}</button>
+    ${any?`<button class="btn ghost" data-act="reset">${t("reset")}</button>`:""}
+    <span id="resetconfirm" class="row"></span>
+  </div>
+  <section class="section">
+    <h2>${t("before")}</h2>
+    <div class="facts">
+      <div class="card fact"><span class="ic" style="background:var(--sun)">${icons.time}</span><div><b>${t("fTime")}</b><span>${t("fTimeT")}</span></div></div>
+      <div class="card fact"><span class="ic" style="background:var(--blue)">${icons.scale}</span><div><b>${t("fScale")}</b><span>${t("fScaleT")}</span>
+        <div class="scale">${t("scale").map((l,k)=>`<i>${k<5?k+1:"N/A"} ${l}</i>`).join("")}</div></div></div>
+      <div class="card fact"><span class="ic" style="background:var(--grass)">${icons.who}</span><div><b>${t("fWho")}</b><span>${t("fWhoT")}</span></div></div>
+      <div class="card fact"><span class="ic" style="background:var(--coral)">${icons.heart}</span><div><b>${t("fRule")}</b><span>${t("fRuleT")}</span></div></div>
+    </div>
+    <div class="notice"><b>${t("limitB")}</b>${t("limit")}</div>
+  </section>
+  <section class="card section">
+    <h2>${t("flow")}</h2>
+    <ol class="steps-list">${t("flowItems").map(([a,b],k)=>`<li><span class="n" style="background:${flowCols[k]}">${k+1}</span><span><b>${a}</b>${b}</span></li>`).join("")}</ol>
+  </section>
+  <p class="foot">${t("localNote")}</p>`;
+}
+function renderQuiz(){
+  const v=cur, s=st(), dims=DIMS[v], i=s[v].step, d=dims[i], qs=dimQ(v,i), a=s[v].a[i]||[];
+  const trail = categories(v).map(c=>`<div class="${c.idx.includes(i)?"on":""}"><div class="bar"><i style="width:${c.idx.filter(k=>dimDone(v,k)).length/c.idx.length*100}%;background:${CATCOL[c.c]}"></i></div><div class="lbl">${esc(catName(c.c))}</div></div>`).join("");
+  const missing = qs.length - filled(a), last = i===dims.length-1;
+  const cheer = t("cheers")[i % t("cheers").length];
+  return `
+  <div class="qtop">
+    <div class="row"><button class="btn ghost" data-act="home">${t("back")}</button><span class="spacer"></span>
+      <div class="langs" role="group" aria-label="Language">${LANGS.map(([k,l])=>`<button type="button" data-act="lang" data-l="${k}" aria-pressed="${lang===k}">${l}</button>`).join("")}</div>
+      <span class="counter">${t("stepOf")(vName(v),i+1,dims.length)}</span></div>
+    <div class="trail">${trail}</div>
+  </div>
+  <section class="card stepcard stepin">
+    <div class="dimhead">${sprout(i%2?"cheer":"happy", v==="P"?"#7DD87F":"#FFB4A8")}
+      <div><span class="eyebrow" style="background:${CATCOL[d.c]}">${esc(catName(d.c))}</span><h2>${esc(dimName(v,i))}</h2>
+      <div class="bubble">${v==="C"?cheer:t("hintP")}</div></div></div>
+    ${qs.map((q,qi)=>`<div class="q"><p><span class="qn">${qi+1}</span>${esc(q)}</p>
+      <div class="opts" role="radiogroup" aria-label="${qi+1}">
+        ${[1,2,3,4,5,"na"].map((val,k)=>`<button type="button" class="opt ${val==="na"?"na":""}" role="radio" aria-checked="${a[qi]===val}" data-act="ans" data-q="${qi}" data-val="${val}" title="${esc(t("scale")[k])}">${face(val)}<small>${t("scale")[k]}</small></button>`).join("")}
+      </div></div>`).join("")}
+    <label class="notelbl" for="note">${t(v==="P"?"noteP":"noteC")}</label>
+    <textarea id="note" placeholder="${esc(t(v==="P"?"notePhP":"notePhC"))}">${esc(s[v].n[i]||"")}</textarea>
+  </section>
+  <div class="navrow">
+    <button class="btn" data-act="prev" ${i===0?"disabled":""}>${t("prev")}</button>
+    <span class="spacer hint" id="hint">${missing?t("missing")(missing):t("pageDone")}</span>
+    <button class="btn primary" data-act="next">${last?t("finish"):t("next")}</button>
+  </div>`;
+}
+function summaryHTML(v){
+  const sc = DIMS[v].map((d,i)=>({i,...score(v,i)})), valid=sc.filter(x=>x.avg!==null);
+  const strong = valid.filter(x=>x.avg>=4).sort((a,b)=>b.avg-a.avg).slice(0,3);
+  const weak = valid.filter(x=>x.avg<3).sort((a,b)=>a.avg-b.avg).slice(0,3);
+  const cnt={s:0,m:0,w:0,n:0}; sc.forEach(x=>cnt[band(x.avg)]++);
+  const list=(arr,empty)=>arr.length?arr.map(x=>`<div><span>${esc(dimName(v,x.i))}</span><span>${fmt(x.avg)}</span></div>`).join(""):`<p class="small muted">${empty}</p>`;
+  const B=t("band");
+  return `<section class="summary">
+    <div class="card sumcol s"><h3>${star("var(--sun)",26)}${t("strengths")}</h3><div class="chiplist">${list(strong,t("noStrength"))}</div></div>
+    <div class="card sumcol w"><h3>${icons.heart.replace('fill="#fff"','fill="var(--grape)"')}${t("support")}</h3><div class="chiplist">${list(weak,t("noSupport"))}</div></div>
+  </section>
+  <div class="section"><div class="dist" role="img" aria-label="${esc(t("distLbl"))}: ${["s","m","w","n"].map(b=>B[b]+" "+cnt[b]).join(", ")}">
+    ${["s","m","w","n"].filter(b=>cnt[b]).map(b=>`<i style="width:${cnt[b]/DIMS[v].length*100}%;background:${BANDCOL[b]}"></i>`).join("")}</div>
+    <div class="legend">${["s","m","w","n"].map(b=>`<span><span class="dot" style="background:${BANDCOL[b]}"></span>${B[b]} ${cnt[b]}</span>`).join("")}</div></div>`;
+}
+function dimsHTML(v){
+  const s=st(), B=t("band"), BT=t(v==="P"?"bandP":"bandC");
+  return categories(v).map(c=>{
+    const vals=c.idx.map(i=>score(v,i).avg).filter(x=>x!==null), cavg=vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:null;
+    return `<section class="card catsec"><div class="cathead"><h3><span class="sw" style="background:${CATCOL[c.c]}"></span>${esc(catName(c.c))}</h3><small>${t("catAvg")} ${fmt(cavg)}</small></div>
+      ${c.idx.map(i=>{const {avg,n}=score(v,i), b=band(avg), note=s[v].n[i], w=avg===null?0:Math.max(4,(avg-1)/4*100);
+        return `<div class="dim"><div class="name">${esc(dimName(v,i))}</div><div class="score">${fmt(avg)}<span class="small muted"> / 5</span></div>
+          <div class="track" aria-hidden="true">${[25,50,75].map(p=>`<u style="left:${p}%"></u>`).join("")}${avg===null?"":`<i style="width:${w}%;background:${BANDCOL[b]}"></i>`}</div>
+          <div class="info"><div><span class="pill p-${b}">${B[b]}</span>${BT[b]} <span class="small muted">· ${t("valid")} ${n}</span></div>
+          <div class="tip"><b>${t(v==="P"?"tipP":"tipC")}</b>${esc(dimTip(v,i))}</div>
+          ${note?`<div class="note">${t("example")}${esc(note)}</div>`:""}</div></div>`;}).join("")}
+    </section>`;}).join("");
+}
+const flagBox = (key, sub) => { const g=gRow(key); return `<div class="card flag"><h3>${esc(g.label)}</h3>${sub?`<p class="small muted">${sub}</p>`:""}
+  <dl><dt>${t("meaning")}</dt><dd>${esc(g.meaning)}</dd><dt>${t("todo")}</dt><dd>${esc(g.todo)}</dd><dt>${t("goal")}</dt><dd>${esc(g.goal)}</dd><dt>${t("when")}</dt><dd>${esc(g.when)}</dd></dl></div>`; };
+function flagsHTML(v){
+  const hits = FLAGS.map(f=>({key:f.key, low:f[v].map(n=>idx(v,n)).filter(i=>{const a=score(v,i).avg;return a!==null&&a<3;})})).filter(f=>f.low.length);
+  if(!hits.length) return "";
+  return `<section class="section"><h2>${t("flagsTitle")}</h2><p class="muted small">${t("flagsNote")}</p>
+    ${hits.map(f=>flagBox(f.key, t("related")+f.low.map(i=>esc(dimName(v,i))).join(" · "))).join("")}</section>`;
+}
+function guideHTML(){
+  const B=t("band");
+  return `<section class="section"><h2>${t("guideTitle")}</h2><div class="tablewrap"><table>
+    <thead><tr>${t("gHead").map(h=>`<th>${h}</th>`).join("")}</tr></thead>
+    <tbody>${["s","m","w","n"].map(b=>{const g=gRow(BANDG[b]);return `<tr><td><span class="pill p-${b}">${B[b]}</span><br>${esc(g.label)}</td><td>${esc(g.meaning)}</td><td>${esc(g.todo)}</td><td>${esc(g.goal)}</td><td>${esc(g.when)}</td></tr>`;}).join("")}</tbody>
+  </table></div></section>`;
+}
+function compareHTML(){
+  const rows = DIMS.C.map((d,ci)=>{
+    const c=score("C",ci).avg, pi=PAIRS[d.d].map(n=>idx("P",n)), pv=pi.map(i=>score("P",i).avg).filter(x=>x!==null);
+    const p=pv.length?pv.reduce((a,b)=>a+b,0)/pv.length:null, diff=(p!==null&&c!==null)?p-c:null;
+    const kind = diff===null?null: diff>=1?"父母版高、儿童版低": diff<=-1?"父母版低、儿童版高":null;
+    return {ci,pi,c,p,diff,kind};
+  });
+  const H=t("cmpHead");
+  return `<p class="muted">${t("cmpNote")}</p>
+  <div class="tablewrap"><table><thead><tr>${H.map(h=>`<th>${h}</th>`).join("")}</tr></thead>
+    <tbody>${rows.map(r=>`<tr><td><b>${esc(dimName("C",r.ci))}</b></td><td class="small muted">${r.pi.map(i=>esc(dimName("P",i))).join(" · ")}</td><td class="num">${fmt(r.c)}</td><td class="num">${fmt(r.p)}</td>
+      <td class="num">${r.diff===null?"—":(r.diff>0?"+":"")+r.diff.toFixed(1)}${r.kind?`<br><span class="pill ${r.diff>0?"p-m":"p-s"}">${t(r.diff>0?"parentHigher":"childHigher")}</span>`:""}</td></tr>`).join("")}</tbody></table></div>
+  ${["父母版高、儿童版低","父母版低、儿童版高"].map(k=>{const l=rows.filter(r=>r.kind===k);return l.length?flagBox(k,l.map(r=>esc(dimName("C",r.ci))).join(" · ")):"";}).join("")}
+  ${rows.some(r=>r.kind)?"":`<p class="small muted">${t("cmpSame")}</p>`}`;
+}
+function planHTML(){
+  const s=st(), p=s.plan, sc=[];
+  ["P","C"].forEach(v=>DIMS[v].forEach((d,i)=>{const a=score(v,i).avg;if(a!==null)sc.push({key:v+"|"+i,v,i,avg:a});}));
+  const lbl = x => `${dimName(x.v,x.i)} (${vName(x.v)} ${fmt(x.avg)})`;
+  const opts = (arr,sel) => `<option value="">${t("choose")}</option>`+arr.map(x=>`<option value="${x.key}" ${sel===x.key?"selected":""}>${esc(lbl(x))}</option>`).join("");
+  const F=t("planFields");
+  return `<section class="card plan"><h2>${t("planTitle")}</h2><p class="small muted">${t("planNote")}</p>
+    <div class="grid2"><label>${F[0]}<select id="plan0" data-plan="0">${opts(sc.filter(x=>x.avg>=4).sort((a,b)=>b.avg-a.avg),p[0])}</select></label>
+    <label>${F[1]}<select id="plan1" data-plan="1">${opts(sc.filter(x=>x.avg<3.5).sort((a,b)=>a.avg-b.avg),p[1])}</select></label></div>
+    ${F.slice(2).map((f,k)=>`<label>${f}<textarea id="plan${k+2}" data-plan="${k+2}">${esc(p[k+2]||"")}</textarea></label>`).join("")}
+    <div class="row"><button class="btn primary" data-act="copy">${t("copy")}</button><span class="small muted">${t("copyNote")}</span></div></section>`;
+}
+function renderResults(){
+  const s=st(), have=v=>answeredCount(v)>0;
+  const tabs=[["P",t("tabP"),have("P")],["C",t("tabC"),have("C")],["X",t("tabX"),have("P")&&have("C")],["plan",t("tabPlan"),have("P")||have("C")]].filter(x=>x[2]);
+  if(!tabs.find(x=>x[0]===resTab)) resTab = tabs[0]?tabs[0][0]:"P";
+  let body="";
+  if(resTab==="P"||resTab==="C"){ const v=resTab;
+    body = `${summaryHTML(v)}${flagsHTML(v)}<h2>${t("dimsTitle")(vName(v))}</h2><p class="small muted">${t("dimsNote")}</p>${dimsHTML(v)}${guideHTML()}
+      ${!isComplete(v)?`<div class="notice row">${t("incomplete")(vName(v),stepsDone(v),DIMS[v].length)}<button class="btn" data-act="start" data-v="${v}">${t("cont")}</button></div>`:""}`;
+  } else if(resTab==="X") body=compareHTML(); else body=planHTML();
+  return `${topbar()}
+  ${sample?`<div class="sample-banner"><span>${t("sampleBanner")}</span><span class="spacer"></span><button class="btn" data-act="exitsample">${t("exitSample")}</button></div>`:""}
+  <div class="row"><button class="btn ghost" data-act="home">${t("back")}</button></div>
+  <header class="card rhero"><div><span class="eyebrow">${t("resEyebrow")}</span><h1>${esc(t("report")(s.name))}</h1><p class="muted">${t("resLead")}</p></div>${sprout("cheer")}</header>
+  <div class="tabs" role="tablist">${tabs.map(x=>`<button class="tab" role="tab" aria-selected="${resTab===x[0]}" data-act="tab" data-t="${x[0]}">${x[1]}</button>`).join("")}</div>
+  ${body}
+  <p class="foot">${t("footer")}</p>`;
+}
+function summaryText(){
+  const s=st(), B=t("band"), lines=[(s.name?s.name+" · ":"")+t("sumTitle"),""];
+  ["P","C"].forEach(v=>{ if(!answeredCount(v)) return; lines.push(`【${vName(v)}】`);
+    categories(v).forEach(c=>{lines.push(catName(c.c)); c.idx.forEach(i=>{const a=score(v,i).avg;lines.push(`  ${dimName(v,i)}: ${fmt(a)} (${B[band(a)]})`);});}); lines.push(""); });
+  const p=s.plan, F=t("planFields");
+  if(Object.values(p).some(Boolean)){ lines.push(`【${t("planTitle")}】`);
+    F.forEach((f,k)=>{ let val=p[k]; if(!val) return; if(k<2){const [v,i]=val.split("|");val=`${dimName(v,+i)} (${vName(v)} ${fmt(score(v,+i).avg)})`;} lines.push(`${f}: ${val}`); }); }
+  return lines.join("\n");
+}
+function makeSample(){
+  let seed=7; const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280;};
+  const sm=blank(); sm.name=t("sampleName"); const N=t("sampleNotes");
+  const bias={"艺术与创作":1.3,"好奇心":1.2,"语言表达":1,"探索意愿":1,"音乐":.8,"工作记忆":-1.4,"注意与回到任务":-1.2,"自律与日常责任":-.9,"屏幕使用平衡":-1.1,
+    "我喜欢的活动":1.3,"好奇与尝试":1.1,"专心与回到任务":-.3,"记住步骤":-.6,"整理与责任":.4,"睡眠与屏幕平衡":-.8};
+  ["P","C"].forEach(v=>{DIMS[v].forEach((d,i)=>{sm[v].a[i]=d.q.map(()=>{if(rnd()<.04)return "na";return Math.min(5,Math.max(1,Math.round(3.4+(bias[d.d]||0)+(rnd()-.5)*1.6)));});});sm[v].finished=true;});
+  sm.P.n[idx("P","艺术与创作")]=N[0]; sm.P.n[idx("P","工作记忆")]=N[1];
+  sm.plan={0:"P|"+idx("P","艺术与创作"),1:"P|"+idx("P","工作记忆"),2:N[2],3:N[3]};
+  return sm;
+}
+
+/* ---------- render & events ---------- */
+const app=document.getElementById("app");
+function render(top=true){
+  document.documentElement.lang = lang;
+  document.title = t("appTitle");
+  app.innerHTML = view==="home"?renderHome():view==="quiz"?renderQuiz():renderResults();
+  if(top) window.scrollTo({top:0});
+}
+app.addEventListener("click",e=>{
+  const b=e.target.closest("[data-act]"); if(!b) return; const act=b.dataset.act, s=st();
+  if(act==="lang"){ lang=b.dataset.l; try{localStorage.setItem(LKEY,lang);}catch(err){} if(sample){const keep=sample.plan;sample=makeSample();} render(false); }
+  else if(act==="start"){ sample=null; cur=b.dataset.v; const x=S[cur]; if(isComplete(cur,S)) x.step=0; else { const f=DIMS[cur].findIndex((_,i)=>!dimDone(cur,i,S)); x.step=f<0?0:f; } view="quiz"; save(); render(); }
+  else if(act==="home"){ sample=null; view="home"; render(); }
+  else if(act==="results"){ sample=null; resTab=b.dataset.v; view="results"; render(); }
+  else if(act==="sample"){ sample=makeSample(); resTab="P"; view="results"; render(); }
+  else if(act==="exitsample"){ sample=null; view="home"; render(); }
+  else if(act==="reset"){ document.getElementById("resetconfirm").innerHTML=`<span class="small"><b>${t("resetQ")}</b></span><button class="btn" data-act="resetyes">${t("resetYes")}</button><button class="btn ghost" data-act="resetno">${t("cancel")}</button>`; }
+  else if(act==="resetyes"){ S=blank(); save(); render(); toast(t("cleared")); }
+  else if(act==="resetno"){ document.getElementById("resetconfirm").innerHTML=""; }
+  else if(act==="ans"){
+    const i=s[cur].step, q=+b.dataset.q, val=b.dataset.val==="na"?"na":+b.dataset.val;
+    (s[cur].a[i] ||= [])[q]=val; save();
+    b.parentElement.querySelectorAll(".opt").forEach(o=>o.setAttribute("aria-checked",String(o===b)));
+    const m=DIMS[cur][i].q.length-filled(s[cur].a[i]);
+    document.getElementById("hint").textContent = m?t("missing")(m):t("pageDone");
+    const bars=categories(cur).map(c=>c.idx.filter(k=>dimDone(cur,k)).length/c.idx.length*100);
+    document.querySelectorAll(".trail .bar i").forEach((el,k)=>el.style.width=bars[k]+"%");
+  }
+  else if(act==="prev"){ if(s[cur].step>0){s[cur].step--;save();render();} }
+  else if(act==="next"){
+    const i=s[cur].step, a=(s[cur].a[i] ||= []);
+    for(let q=0;q<DIMS[cur][i].q.length;q++) if(a[q]===undefined||a[q]===null) a[q]="na";
+    if(i<DIMS[cur].length-1){ s[cur].step++; save(); render(); }
+    else { s[cur].finished=true; save(); resTab=cur; view="results"; render(); toast(t("finished")(vName(cur))); confetti(); }
+  }
+  else if(act==="tab"){ resTab=b.dataset.t; render(false); }
+  else if(act==="copy"){
+    const txt=summaryText();
+    const fb=()=>{const ta=document.createElement("textarea");ta.value=txt;ta.style.cssText="position:fixed;opacity:0";document.body.appendChild(ta);ta.select();let ok=false;try{ok=document.execCommand("copy");}catch(err){}ta.remove();toast(ok?t("copied"):t("copyFail"));};
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(()=>toast(t("copied")),fb); else fb();
+  }
+});
+app.addEventListener("input",e=>{
+  const el=e.target, s=st();
+  if(el.id==="childname"){ S.name=el.value; save(); }
+  else if(el.id==="note"){ s[cur].n[s[cur].step]=el.value; save(); }
+  else if(el.dataset.plan!==undefined && el.tagName==="TEXTAREA"){ s.plan[el.dataset.plan]=el.value; save(); }
+});
+app.addEventListener("change",e=>{ const el=e.target; if(el.tagName==="SELECT"&&el.dataset.plan!==undefined){ st().plan[el.dataset.plan]=el.value; save(); } });
+document.addEventListener("keydown",e=>{
+  if(view!=="quiz"||/TEXTAREA|INPUT|SELECT/.test(document.activeElement.tagName)) return;
+  if(e.key==="ArrowRight") document.querySelector('[data-act="next"]')?.click();
+  if(e.key==="ArrowLeft") document.querySelector('[data-act="prev"]')?.click();
+});
+render();
+</script>
+
+</body>
+</html>
